@@ -1,3 +1,6 @@
+```javascript
+/* ===== ALFABETO ===== */
+
 const letras = {};
  a: "A.png",
     b: "B.png",
@@ -26,14 +29,14 @@ const letras = {};
     y: "Y.png",
     z: "Z.png",
     ç: "Ç.png"
-```javascript
-"abcdefghijklmnopqrstuvwxyzç".split("").forEach(letra => {
-    letras[letra] = `letras/${letra}.png`;
-});
+"abcdefghijklmnopqrstuvwxyzç".split("").forEach(l =>
+    letras[l] = `letras/${l}.png`
+);
 
+
+/* ===== ELEMENTOS ===== */
 
 const svg = document.getElementById("circuloMagico");
-
 const efeito = document.getElementById("efeito");
 const elemento = document.getElementById("elemento");
 const forma = document.getElementById("forma");
@@ -45,734 +48,324 @@ const baixar = document.getElementById("baixar");
 const tamanho = document.getElementById("tamanho");
 const tamanhoValor = document.getElementById("tamanhoValor");
 
-const mostrarEfeito =
-    document.getElementById("mostrarEfeito");
+const infoEfeito = document.getElementById("mostrarEfeito");
+const infoElemento = document.getElementById("mostrarElemento");
+const infoForma = document.getElementById("mostrarForma");
+const infoTraducao = document.getElementById("mostrarTraducao");
 
-const mostrarElemento =
-    document.getElementById("mostrarElemento");
 
-const mostrarForma =
-    document.getElementById("mostrarForma");
+/* ===== CONFIGURAÇÃO ===== */
 
-const mostrarTraducao =
-    document.getElementById("mostrarTraducao");
+const C = 400;
 
-const CX = 400;
-const CY = 400;
 
-function limparTexto(texto) {
+/* ===== CRIAR SVG ===== */
 
-    return texto
-        .normalize("NFD")
+function el(tag, a = {}) {
+    const e = document.createElementNS(
+        "http://www.w3.org/2000/svg", tag
+    );
+
+    for (let k in a) e.setAttribute(k, a[k]);
+
+    return e;
+}
+
+
+/* ===== TEXTO SEM ACENTOS ===== */
+
+function normalizar(t) {
+    return t.normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-
 }
 
-function criarSVG(tipo, atributos = {}) {
 
-    const elemento =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            tipo
-        );
+/* ===== CÍRCULO ===== */
 
-    for (const atributo in atributos) {
+function circle(r, w = 1) {
+    svg.appendChild(el("circle", {
+        cx: C,
+        cy: C,
+        r: r,
+        fill: "none",
+        stroke: "#dce4ff",
+        "stroke-width": w
+    }));
+}
 
-        elemento.setAttribute(
-            atributo,
-            atributos[atributo]
+
+/* ===== POLÍGONO ===== */
+
+function polygon(n, r) {
+
+    let p = [];
+
+    for (let i = 0; i < n; i++) {
+
+        let a = -Math.PI / 2 + i * Math.PI * 2 / n;
+
+        p.push(
+            `${C + Math.cos(a) * r},${C + Math.sin(a) * r}`
         );
 
     }
 
-    return elemento;
-
+    svg.appendChild(el("polygon", {
+        points: p.join(" "),
+        fill: "none",
+        stroke: "#dce4ff",
+        "stroke-width": 1
+    }));
 }
 
-function adicionarCirculo(
-    raio,
-    espessura = 1,
-    opacidade = 1
-) {
 
-    const c = criarSVG(
-        "circle",
-        {
-            cx: CX,
-            cy: CY,
-            r: raio,
+/* ===== ÁRVORE DA VIDA ===== */
 
-            fill: "none",
+function arvore() {
 
+    const p = [
+        [0,-150],[-80,-80],[80,-80],
+        [-90,0],[0,0],[90,0],
+        [-80,80],[80,80],[0,150]
+    ];
+
+    const linhas = [
+        [0,1],[0,2],[1,3],[1,4],
+        [2,4],[2,5],[3,4],[4,5],
+        [3,6],[4,6],[4,7],[5,7],
+        [6,8],[7,8],[6,7]
+    ];
+
+    linhas.forEach(x => {
+
+        svg.appendChild(el("line", {
+            x1: C+p[x[0]][0],
+            y1: C+p[x[0]][1],
+            x2: C+p[x[1]][0],
+            y2: C+p[x[1]][1],
+            stroke: "#8997d2",
+            "stroke-width": 1
+        }));
+
+    });
+
+    p.forEach(x => {
+
+        svg.appendChild(el("circle", {
+            cx: C+x[0],
+            cy: C+x[1],
+            r: 9,
+            fill: "#05070d",
             stroke: "#dce4ff",
+            "stroke-width": 1.5
+        }));
 
-            "stroke-width": espessura,
-
-            opacity: opacidade
-        }
-    );
-
-    svg.appendChild(c);
-
+    });
 }
 
-function adicionarRadiais(
-    quantidade,
-    raio
-) {
 
-    for (let i = 0; i < quantidade; i++) {
+/* ===== TEXTO NO CÍRCULO ===== */
 
-        const angulo =
-            i * Math.PI * 2 / quantidade;
+function textoCircular(texto) {
 
-
-        const x =
-            CX +
-            Math.cos(angulo) *
-            raio;
-
-
-        const y =
-            CY +
-            Math.sin(angulo) *
-            raio;
-
-
-        const linha = criarSVG(
-            "line",
-            {
-                x1: CX,
-                y1: CY,
-
-                x2: x,
-                y2: y,
-
-                stroke: "#8997d2",
-
-                "stroke-width": 0.7,
-
-                opacity: 0.3
-            }
-        );
-
-
-        svg.appendChild(linha);
-
-    }
-
-}
-
-function adicionarPoligono(
-    lados,
-    raio
-) {
-
-    let pontos = [];
-
-
-    for (let i = 0; i < lados; i++) {
-
-        const angulo =
-            -Math.PI / 2 +
-            i * Math.PI * 2 / lados;
-
-
-        const x =
-            CX +
-            Math.cos(angulo) *
-            raio;
-
-
-        const y =
-            CY +
-            Math.sin(angulo) *
-            raio;
-
-
-        pontos.push(`${x},${y}`);
-
-    }
-
-
-    const poligono =
-        criarSVG(
-            "polygon",
-            {
-                points:
-                    pontos.join(" "),
-
-                fill: "none",
-
-                stroke: "#dce4ff",
-
-                "stroke-width": 1.2,
-
-                opacity: 0.8
-            }
-        );
-
-
-    svg.appendChild(poligono);
-
-}
-
-function adicionarEstrela(
-    pontas,
-    externo,
-    interno
-) {
-
-    let pontos = [];
-
-
-    for (
-        let i = 0;
-        i < pontas * 2;
-        i++
-    ) {
-
-        const raio =
-            i % 2 === 0
-                ? externo
-                : interno;
-
-
-        const angulo =
-            -Math.PI / 2 +
-            i * Math.PI / pontas;
-
-
-        const x =
-            CX +
-            Math.cos(angulo) *
-            raio;
-
-
-        const y =
-            CY +
-            Math.sin(angulo) *
-            raio;
-
-
-        pontos.push(`${x},${y}`);
-
-    }
-
-
-    const estrela =
-        criarSVG(
-            "polygon",
-            {
-                points:
-                    pontos.join(" "),
-
-                fill: "none",
-
-                stroke: "#dce4ff",
-
-                "stroke-width": 1.5,
-
-                opacity: 0.85
-            }
-        );
-
-
-    svg.appendChild(estrela);
-
-}
-
-function adicionarArvore() {
-
-    const pontos = [
-
-        [0, -170],
-
-        [-90, -90],
-        [90, -90],
-
-        [-100, 0],
-        [0, 0],
-        [100, 0],
-
-        [-90, 90],
-        [90, 90],
-
-        [0, 170]
-
-    ];
-
-
-    const conexoes = [
-
-        [0,1],
-        [0,2],
-
-        [1,3],
-        [1,4],
-
-        [2,4],
-        [2,5],
-
-        [3,4],
-        [4,5],
-
-        [3,6],
-        [4,6],
-
-        [4,7],
-        [5,7],
-
-        [6,8],
-        [7,8],
-
-        [6,7]
-
-    ];
-
-
-    /* LINHAS DA ÁRVORE */
-
-    conexoes.forEach(
-        ([a,b]) => {
-
-            const linha =
-                criarSVG(
-                    "line",
-                    {
-
-                        x1:
-                            CX +
-                            pontos[a][0],
-
-                        y1:
-                            CY +
-                            pontos[a][1],
-
-                        x2:
-                            CX +
-                            pontos[b][0],
-
-                        y2:
-                            CY +
-                            pontos[b][1],
-
-                        stroke:
-                            "#8997d2",
-
-                        "stroke-width":
-                            0.8,
-
-                        opacity:
-                            0.45
-
-                    }
-                );
-
-
-            svg.appendChild(linha);
-
-        }
-    );
-
-
-    /* SEFIROT */
-
-    pontos.forEach(
-        ([x,y]) => {
-
-            const esfera =
-                criarSVG(
-                    "circle",
-                    {
-
-                        cx:
-                            CX + x,
-
-                        cy:
-                            CY + y,
-
-                        r: 10,
-
-                        fill:
-                            "#080b14",
-
-                        stroke:
-                            "#dce4ff",
-
-                        "stroke-width":
-                            1.4
-
-                    }
-                );
-
-
-            svg.appendChild(esfera);
-
-        }
-    );
-
-}
-
-function adicionarTextoCircular(
-    texto,
-    raio
-) {
-
-    texto =
-        limparTexto(texto)
+    texto = normalizar(texto)
         .replace(/[^a-z]/g, "");
 
+    if (!texto) return;
 
-    if (!texto.length) {
-        return;
-    }
+    texto.split("").forEach((l, i) => {
 
+        let angulo = i * 360 / texto.length;
 
-    const grupo =
-        criarSVG("g");
+        let t = el("text", {
+            x: C,
+            y: 75,
+            fill: "#eef2ff",
+            "font-size": 17,
+            "text-anchor": "middle",
+            transform:
+                `rotate(${angulo} ${C} ${C})`
+        });
 
+        t.textContent = l.toUpperCase();
 
-    const caracteres =
-        texto.split("");
-
-
-    caracteres.forEach(
-        (letra, indice) => {
-
-            const angulo =
-                indice *
-                360 /
-                caracteres.length;
-
-
-            const t =
-                criarSVG(
-                    "text",
-                    {
-
-                        x: CX,
-
-                        y:
-                            CY - raio,
-
-                        fill:
-                            "#eef2ff",
-
-                        "font-size":
-                            "17",
-
-                        "font-family":
-                            "serif",
-
-                        "text-anchor":
-                            "middle",
-
-                        "dominant-baseline":
-                            "middle",
-
-                        transform:
-                            `rotate(${angulo} ${CX} ${CY})`
-
-                    }
-                );
-
-
-            t.textContent =
-                letra.toUpperCase();
-
-
-            grupo.appendChild(t);
-
-        }
-    );
-
-
-    svg.appendChild(grupo);
-
+        svg.appendChild(t);
+    });
 }
 
-function construirMagia() {
 
-    const valor =
-        efeito.value;
+/* ===== CONSTRUIR MAGIA ===== */
 
+function magia() {
 
-    /*
-       Procura o número no final.
+    let m = efeito.value.match(
+        /^(.*?)(?:\s+(\d+))?$/
+    );
 
-       Exemplo:
-
-       Fortalecimento 3
-
-       vira:
-
-       nome = Fortalecimento
-       nível = 3
-    */
-
-    const resultado =
-        valor.match(
-            /^(.*?)(?:\s+(\d+))?$/
-        );
-
-
-    const nomeEfeito =
-        resultado[1];
-
-
-    const nivel =
-        Number(
-            resultado[2] || 1
-        );
-
+    let nomeEfeito = m[1];
+    let nivel = Number(m[2] || 1);
 
     let partes = [];
 
+    for (let i = 0; i < nivel; i++)
+        partes.push(nomeEfeito);
 
-    for (
-        let i = 0;
-        i < nivel;
-        i++
-    ) {
-
-        partes.push(
-            nomeEfeito
-        );
-
-    }
-
-
-    partes.push(
-        elemento.value
-    );
-
-
-    partes.push(
-        forma.value
-    );
-
+    partes.push(elemento.value);
+    partes.push(forma.value);
 
     return partes.join(" ");
-
 }
+
+
+/* ===== GERAR ===== */
 
 function gerarCirculo() {
 
-    /*
-       LIMPA TUDO
-    */
-
     svg.innerHTML = "";
 
+    svg.setAttribute("viewBox","0 0 800 800");
 
-    /*
-       GARANTE O VIEWBOX
-    */
+    /* fundo */
 
-    svg.setAttribute(
-        "viewBox",
-        "0 0 800 800"
-    );
+    svg.appendChild(el("rect", {
+        width: 800,
+        height: 800,
+        fill: "#05070d"
+    }));
 
+    /* círculos */
 
-    svg.setAttribute(
-        "width",
-        "800"
-    );
+    circle(375,2);
+    circle(350,1);
+    circle(300,1);
+    circle(240,1);
+    circle(190,1);
 
+    /* geometria */
 
-    svg.setAttribute(
-        "height",
-        "800"
-    );
+    polygon(6,290);
+    polygon(8,245);
 
+    /* árvore */
 
-    /*
-       FUNDO
-    */
+    arvore();
 
-    const fundo =
-        criarSVG(
-            "rect",
-            {
+    /* escrita */
 
-                x: 0,
-                y: 0,
+    let texto = magia();
 
-                width: 800,
-                height: 800,
+    textoCircular(texto);
 
-                fill: "#05070d"
+    /* nome */
 
-            }
-        );
+    if (nome.value.trim()) {
 
+        let t = el("text", {
+            x:C,
+            y:C+5,
+            fill:"#fff",
+            "font-size":18,
+            "text-anchor":"middle"
+        });
 
-    svg.appendChild(fundo);
-
-
-    /*
-       CÍRCULOS EXTERNOS
-    */
-
-    adicionarCirculo(
-        375,
-        2
-    );
-
-    adicionarCirculo(
-        360,
-        1
-    );
-
-    adicionarCirculo(
-        335,
-        1
-    );
-
-
-    /*
-       CÍRCULOS INTERNOS
-    */
-
-    adicionarCirculo(
-        300,
-        1.5
-    );
-
-    adicionarCirculo(
-        245,
-        1
-    );
-
-    adicionarCirculo(
-        190,
-        1
-    );
-
-
-    /*
-       GEOMETRIA
-    */
-
-    adicionarEstrela(
-        6,
-        290,
-        145
-    );
-
-
-    adicionarPoligono(
-        8,
-        250
-    );
-
-
-    adicionarRadiais(
-        16,
-        350
-    );
-
-
-    /*
-       ÁRVORE DA VIDA
-    */
-
-    adicionarArvore();
-
-
-    /*
-       TEXTO
-    */
-
-    const magia =
-        construirMagia();
-
-
-    adicionarTextoCircular(
-        magia,
-        320
-    );
-
-
-    /*
-       NOME DA MAGIA
-    */
-
-    if (
-        nome.value.trim() !== ""
-    ) {
-
-        const texto =
-            criarSVG(
-                "text",
-                {
-
-                    x: CX,
-
-                    y: CY + 5,
-
-                    fill:
-                        "#ffffff",
-
-                    "font-size":
-                        18,
-
-                    "font-family":
-                        "serif",
-
-                    "text-anchor":
-                        "middle",
-
-                    "letter-spacing":
-                        3
-
-                }
-            );
-
-
-        texto.textContent =
+        t.textContent =
             nome.value.toUpperCase();
 
-
-        svg.appendChild(texto);
-
+        svg.appendChild(t);
     }
 
+    /* informações */
 
-    /*
-       ATUALIZA PAINEL
-    */
-
-    mostrarEfeito.textContent =
-        efeito.value;
-
-
-    mostrarElemento.textContent =
-        elemento.value;
-
-
-    mostrarForma.textContent =
-        forma.value;
-
-
-    mostrarTraducao.textContent =
-        magia;
-
+    infoEfeito.textContent = efeito.value;
+    infoElemento.textContent = elemento.value;
+    infoForma.textContent = forma.value;
+    infoTraducao.textContent = texto;
 }
 
-tamanho.addEventListener(
-    "input",
-    () => {
 
-        tamanhoValor.textContent =
-            `${tamanho.value} px`;
+/* ===== TAMANHO ===== */
 
-        svg.style.width =
-            `${tamanho.value}px`;
+tamanho.addEventListener("input", () => {
 
-    }
-);
+    tamanhoValor.textContent =
+        tamanho.value + " px";
 
+    svg.style.width =
+        tamanho.value + "px";
+});
+
+
+/* ===== EVENTOS ===== */
+
+gerar.onclick = gerarCirculo;
+
+efeito.onchange = gerarCirculo;
+elemento.onchange = gerarCirculo;
+forma.onchange = gerarCirculo;
+nome.oninput = gerarCirculo;
+
+
+/* ===== DOWNLOAD PNG ===== */
+
+baixar.onclick = () => {
+
+    const xml =
+        new XMLSerializer()
+        .serializeToString(svg);
+
+    const blob = new Blob(
+        [xml],
+        {type:"image/svg+xml"}
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const img = new Image();
+
+    img.onload = () => {
+
+        const canvas =
+            document.createElement("canvas");
+
+        canvas.width = 1600;
+        canvas.height = 1600;
+
+        const ctx =
+            canvas.getContext("2d");
+
+        ctx.fillStyle = "#05070d";
+
+        ctx.fillRect(
+            0,0,1600,1600
+        );
+
+        ctx.drawImage(
+            img,
+            0,0,
+            1600,1600
+        );
+
+        const link =
+            document.createElement("a");
+
+        link.download =
+            "circulo-magico.png";
+
+        link.href =
+            canvas.toDataURL("image/png");
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+    };
+
+    img.src = url;
+};
+
+
+/* ===== INICIAR ===== */
+
+gerarCirculo();
+```
