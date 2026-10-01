@@ -3,16 +3,18 @@
    GERADOR DE CÍRCULOS MÁGICOS
    ============================================================
 
-   Estrutura das letras:
+   ALFABETO PERSONALIZADO
+
+   A.png
+   B.png
+   C.png
+   ...
+   Z.png
+   Ç.png
+
+   Todos os arquivos devem estar dentro da pasta:
 
    letras/
-      a.png
-      b.png
-      c.png
-      ...
-      z.png
-
-   Cada imagem representa uma letra da linguagem do RPG.
 
    ============================================================ */
 
@@ -35,85 +37,97 @@ const botaoBaixar = document.getElementById("baixar");
 const tamanho = document.getElementById("tamanho");
 const tamanhoValor = document.getElementById("tamanhoValor");
 
-const mostrarEfeito = document.getElementById("mostrarEfeito");
-const mostrarElemento = document.getElementById("mostrarElemento");
-const mostrarForma = document.getElementById("mostrarForma");
-const mostrarTraducao = document.getElementById("mostrarTraducao");
+const mostrarEfeito =
+    document.getElementById("mostrarEfeito");
+
+const mostrarElemento =
+    document.getElementById("mostrarElemento");
+
+const mostrarForma =
+    document.getElementById("mostrarForma");
+
+const mostrarTraducao =
+    document.getElementById("mostrarTraducao");
 
 
 /* ============================================================
    2. CONFIGURAÇÕES
    ============================================================ */
 
-const TAMANHO_SVG = 800;
-
 const CENTRO_X = 400;
 const CENTRO_Y = 400;
 
+const TAMANHO_SVG = 800;
 
-/*
-   Pasta onde ficam as imagens das letras.
-*/
 const PASTA_LETRAS = "letras/";
 
+const TAMANHO_LETRA = 28;
 
-/*
-   Tamanho padrão das imagens das letras.
-*/
-const TAMANHO_LETRA = 25;
-
-
-/*
-   Cor principal do círculo.
-*/
 const COR_PRINCIPAL = "#dce4ff";
 
-
-/*
-   Cor secundária.
-*/
 const COR_SECUNDARIA = "#8997d2";
 
-
-/*
-   Fundo.
-*/
 const COR_FUNDO = "#05070d";
 
 
 /* ============================================================
-   3. ALFABETO
+   3. MAPA DO ALFABETO
    ============================================================ */
 
 
 /*
-   Cria automaticamente:
+   IMPORTANTE:
 
-   a -> letras/a.png
-   b -> letras/b.png
-   c -> letras/c.png
+   Os nomes dos arquivos estão com letras MAIÚSCULAS.
+
+   Portanto:
+
+   A -> A.png
+   B -> B.png
+   C -> C.png
 
    etc.
+
+   Ç -> Ç.png
 */
 
-const letras = {};
+const letras = {
 
-"abcdefghijklmnopqrstuvwxyz".split("").forEach(letra => {
+    "A": "letras/A.png",
+    "B": "letras/B.png",
+    "C": "letras/C.png",
+    "D": "letras/D.png",
+    "E": "letras/E.png",
+    "F": "letras/F.png",
+    "G": "letras/G.png",
+    "H": "letras/H.png",
+    "I": "letras/I.png",
+    "J": "letras/J.png",
+    "K": "letras/K.png",
+    "L": "letras/L.png",
+    "M": "letras/M.png",
+    "N": "letras/N.png",
+    "O": "letras/O.png",
+    "P": "letras/P.png",
+    "Q": "letras/Q.png",
+    "R": "letras/R.png",
+    "S": "letras/S.png",
+    "T": "letras/T.png",
+    "U": "letras/U.png",
+    "V": "letras/V.png",
+    "W": "letras/W.png",
+    "X": "letras/X.png",
+    "Y": "letras/Y.png",
+    "Z": "letras/Z.png",
+    "Ç": "letras/Ç.png"
 
-    letras[letra] =
-        PASTA_LETRAS + letra + ".png";
-
-});
+};
 
 
 /* ============================================================
-   4. FUNÇÕES BÁSICAS DE SVG
+   4. CRIAR ELEMENTO SVG
    ============================================================ */
 
-
-/*
-   Cria um elemento SVG.
-*/
 function criarElemento(tag, atributos = {}) {
 
     const elementoSVG =
@@ -132,12 +146,14 @@ function criarElemento(tag, atributos = {}) {
     });
 
     return elementoSVG;
+
 }
 
 
-/*
-   Adiciona um elemento ao SVG.
-*/
+/* ============================================================
+   5. ADICIONAR AO SVG
+   ============================================================ */
+
 function adicionar(elementoSVG) {
 
     svg.appendChild(elementoSVG);
@@ -146,52 +162,66 @@ function adicionar(elementoSVG) {
 
 
 /* ============================================================
-   5. NORMALIZAÇÃO DE TEXTO
+   6. NORMALIZAÇÃO
    ============================================================ */
 
 
 /*
-   Remove acentos.
+   Remove acentos de letras normais.
+
+   Porém preserva o Ç.
 
    Exemplo:
 
-   "Água" -> "Agua"
-   "Elétrico" -> "Eletrico"
-   "Psíquico" -> "Psiquico"
+   Água
+   vira
+   Agua
+
+   Elétrico
+   vira
+   Eletrico
+
+   Psíquico
+   vira
+   Psiquico
+
+   Mas:
+
+   Ç
+   continua
+   Ç
 */
-function normalizar(texto) {
+
+function normalizarTexto(texto) {
 
     return texto
+        .replace(/ç/gi, "Ç")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase();
-
-}
-
-
-/*
-   Remove tudo que não seja letra.
-
-   Exemplo:
-
-   "Repulsão 2" -> "repulsao"
-*/
-function somenteLetras(texto) {
-
-    return normalizar(texto)
-        .replace(/[^a-z]/g, "");
+        .replace(/Ç/g, "Ç")
+        .toUpperCase();
 
 }
 
 
 /* ============================================================
-   6. CÍRCULOS
+   7. PEGAR APENAS LETRAS
    ============================================================ */
 
+function somenteLetras(texto) {
 
-/*
-   Cria um círculo.
-*/
+    texto = normalizarTexto(texto);
+
+    return texto
+        .replace(/[^A-ZÇ]/g, "");
+
+}
+
+
+/* ============================================================
+   8. CRIAR CÍRCULO
+   ============================================================ */
+
 function criarCirculo(
     raio,
     espessura = 1,
@@ -203,6 +233,7 @@ function criarCirculo(
         criarElemento("circle", {
 
             cx: CENTRO_X,
+
             cy: CENTRO_Y,
 
             r: raio,
@@ -220,33 +251,37 @@ function criarCirculo(
 }
 
 
-/*
-   Cria vários círculos concêntricos.
-*/
+/* ============================================================
+   9. CÍRCULOS PRINCIPAIS
+   ============================================================ */
+
 function criarCirculosPrincipais() {
 
     criarCirculo(375, 2);
-    criarCirculo(350, 1);
-    criarCirculo(315, 1);
-    criarCirculo(285, 1);
+
+    criarCirculo(355, 1);
+
+    criarCirculo(330, 1);
+
+    criarCirculo(305, 1);
+
+    criarCirculo(280, 1);
+
     criarCirculo(250, 1);
-    criarCirculo(215, 1);
-    criarCirculo(175, 1);
+
+    criarCirculo(220, 1);
+
+    criarCirculo(180, 1);
+
+    criarCirculo(145, 1);
 
 }
 
 
 /* ============================================================
-   7. POLÍGONOS
+   10. POLÍGONO
    ============================================================ */
 
-
-/*
-   Cria um polígono regular.
-
-   lados = quantidade de lados
-   raio = distância do centro
-*/
 function criarPoligono(
     lados,
     raio,
@@ -257,7 +292,11 @@ function criarPoligono(
 
     let pontos = [];
 
-    for (let i = 0; i < lados; i++) {
+    for (
+        let i = 0;
+        i < lados;
+        i++
+    ) {
 
         const angulo =
             rotacao +
@@ -265,11 +304,13 @@ function criarPoligono(
 
         const x =
             CENTRO_X +
-            Math.cos(angulo) * raio;
+            Math.cos(angulo) *
+            raio;
 
         const y =
             CENTRO_Y +
-            Math.sin(angulo) * raio;
+            Math.sin(angulo) *
+            raio;
 
         pontos.push(
             `${x},${y}`
@@ -277,17 +318,22 @@ function criarPoligono(
 
     }
 
+
     adicionar(
 
         criarElemento("polygon", {
 
-            points: pontos.join(" "),
+            points:
+                pontos.join(" "),
 
-            fill: "none",
+            fill:
+                "none",
 
-            stroke: cor,
+            stroke:
+                cor,
 
-            "stroke-width": espessura
+            "stroke-width":
+                espessura
 
         })
 
@@ -296,10 +342,15 @@ function criarPoligono(
 }
 
 
-/*
-   Geometria principal.
-*/
+/* ============================================================
+   11. GEOMETRIA MÁGICA
+   ============================================================ */
+
 function criarGeometria() {
+
+    /*
+       Triângulo para cima.
+    */
 
     criarPoligono(
         3,
@@ -308,6 +359,11 @@ function criarGeometria() {
         COR_SECUNDARIA,
         1
     );
+
+
+    /*
+       Triângulo invertido.
+    */
 
     criarPoligono(
         3,
@@ -317,6 +373,11 @@ function criarGeometria() {
         1
     );
 
+
+    /*
+       Quadrado.
+    */
+
     criarPoligono(
         4,
         250,
@@ -325,18 +386,28 @@ function criarGeometria() {
         1
     );
 
+
+    /*
+       Hexágono.
+    */
+
     criarPoligono(
         6,
-        290,
+        215,
         -Math.PI / 2,
         COR_PRINCIPAL,
-        1.5
+        1
     );
+
+
+    /*
+       Octógono.
+    */
 
     criarPoligono(
         8,
-        240,
-        -Math.PI / 8,
+        175,
+        Math.PI / 8,
         COR_SECUNDARIA,
         1
     );
@@ -345,57 +416,69 @@ function criarGeometria() {
 
 
 /* ============================================================
-   8. LINHAS RADIAIS
+   12. LINHAS RADIAIS
    ============================================================ */
 
-
-/*
-   Cria linhas saindo do centro.
-*/
 function criarLinhasRadiais(
     quantidade,
     raioInterno,
     raioExterno
 ) {
 
-    for (let i = 0; i < quantidade; i++) {
+    for (
+        let i = 0;
+        i < quantidade;
+        i++
+    ) {
 
         const angulo =
-            i * Math.PI * 2 / quantidade;
+            i *
+            Math.PI *
+            2 /
+            quantidade;
+
 
         const x1 =
             CENTRO_X +
             Math.cos(angulo) *
             raioInterno;
 
+
         const y1 =
             CENTRO_Y +
             Math.sin(angulo) *
             raioInterno;
+
 
         const x2 =
             CENTRO_X +
             Math.cos(angulo) *
             raioExterno;
 
+
         const y2 =
             CENTRO_Y +
             Math.sin(angulo) *
             raioExterno;
+
 
         adicionar(
 
             criarElemento("line", {
 
                 x1: x1,
+
                 y1: y1,
 
                 x2: x2,
+
                 y2: y2,
 
-                stroke: COR_SECUNDARIA,
+                stroke:
+                    COR_SECUNDARIA,
 
-                "stroke-width": 1
+                "stroke-width":
+                    1
 
             })
 
@@ -407,42 +490,53 @@ function criarLinhasRadiais(
 
 
 /* ============================================================
-   9. PEQUENOS SÍMBOLOS
+   13. PONTOS DECORATIVOS
    ============================================================ */
 
-
-/*
-   Cria pequenos círculos ao redor do círculo.
-*/
 function criarPontosDecorativos() {
 
-    const quantidade = 24;
+    const quantidade = 32;
 
     const raio = 350;
 
-    for (let i = 0; i < quantidade; i++) {
+
+    for (
+        let i = 0;
+        i < quantidade;
+        i++
+    ) {
 
         const angulo =
-            i * Math.PI * 2 / quantidade;
+            i *
+            Math.PI *
+            2 /
+            quantidade;
+
 
         const x =
             CENTRO_X +
-            Math.cos(angulo) * raio;
+            Math.cos(angulo) *
+            raio;
+
 
         const y =
             CENTRO_Y +
-            Math.sin(angulo) * raio;
+            Math.sin(angulo) *
+            raio;
+
 
         adicionar(
 
             criarElemento("circle", {
 
                 cx: x,
+
                 cy: y,
 
                 r: 3,
 
-                fill: COR_PRINCIPAL
+                fill:
+                    COR_PRINCIPAL
 
             })
 
@@ -453,29 +547,43 @@ function criarPontosDecorativos() {
 }
 
 
-/*
-   Cria pequenos losangos decorativos.
-*/
+/* ============================================================
+   14. LOSANGOS
+   ============================================================ */
+
 function criarLosangos() {
 
-    const quantidade = 12;
+    const quantidade = 16;
 
     const raio = 315;
 
-    for (let i = 0; i < quantidade; i++) {
+    const tamanho = 6;
+
+
+    for (
+        let i = 0;
+        i < quantidade;
+        i++
+    ) {
 
         const angulo =
-            i * Math.PI * 2 / quantidade;
+            i *
+            Math.PI *
+            2 /
+            quantidade;
+
 
         const x =
             CENTRO_X +
-            Math.cos(angulo) * raio;
+            Math.cos(angulo) *
+            raio;
+
 
         const y =
             CENTRO_Y +
-            Math.sin(angulo) * raio;
+            Math.sin(angulo) *
+            raio;
 
-        const tamanho = 7;
 
         const pontos = [
 
@@ -489,6 +597,7 @@ function criarLosangos() {
 
         ];
 
+
         adicionar(
 
             criarElemento("polygon", {
@@ -496,12 +605,14 @@ function criarLosangos() {
                 points:
                     pontos.join(" "),
 
-                fill: "none",
+                fill:
+                    "none",
 
                 stroke:
                     COR_PRINCIPAL,
 
-                "stroke-width": 1
+                "stroke-width":
+                    1
 
             })
 
@@ -513,23 +624,9 @@ function criarLosangos() {
 
 
 /* ============================================================
-   10. ÁRVORE DA VIDA
+   15. ÁRVORE DA VIDA
    ============================================================ */
 
-
-/*
-   Representação simplificada da Árvore da Vida.
-
-             1
-
-          2     3
-
-        4    5    6
-
-          7     8
-
-             9
-*/
 function criarArvoreDaVida() {
 
     const pontos = [
@@ -537,13 +634,17 @@ function criarArvoreDaVida() {
         [0, -145],
 
         [-75, -75],
+
         [75, -75],
 
         [-100, 0],
+
         [0, 0],
+
         [100, 0],
 
         [-75, 75],
+
         [75, 75],
 
         [0, 145]
@@ -551,9 +652,6 @@ function criarArvoreDaVida() {
     ];
 
 
-    /*
-       Conexões entre as esferas.
-    */
     const conexoes = [
 
         [0, 1],
@@ -586,119 +684,141 @@ function criarArvoreDaVida() {
 
 
     /*
-       Linhas.
+       Linhas da Árvore.
     */
-    conexoes.forEach(conexao => {
 
-        const a =
-            pontos[conexao[0]];
+    conexoes.forEach(
+        conexao => {
 
-        const b =
-            pontos[conexao[1]];
+            const a =
+                pontos[conexao[0]];
 
-        adicionar(
+            const b =
+                pontos[conexao[1]];
 
-            criarElemento("line", {
 
-                x1:
-                    CENTRO_X + a[0],
+            adicionar(
 
-                y1:
-                    CENTRO_Y + a[1],
+                criarElemento("line", {
 
-                x2:
-                    CENTRO_X + b[0],
+                    x1:
+                        CENTRO_X + a[0],
 
-                y2:
-                    CENTRO_Y + b[1],
+                    y1:
+                        CENTRO_Y + a[1],
 
-                stroke:
-                    COR_SECUNDARIA,
+                    x2:
+                        CENTRO_X + b[0],
 
-                "stroke-width":
-                    1
+                    y2:
+                        CENTRO_Y + b[1],
 
-            })
+                    stroke:
+                        COR_SECUNDARIA,
 
-        );
+                    "stroke-width":
+                        1
 
-    });
+                })
+
+            );
+
+        }
+    );
 
 
     /*
-       Esferas.
+       Esferas da Árvore.
     */
-    pontos.forEach(ponto => {
 
-        adicionar(
+    pontos.forEach(
+        ponto => {
 
-            criarElemento("circle", {
+            adicionar(
 
-                cx:
-                    CENTRO_X + ponto[0],
+                criarElemento(
+                    "circle",
+                    {
 
-                cy:
-                    CENTRO_Y + ponto[1],
+                        cx:
+                            CENTRO_X +
+                            ponto[0],
 
-                r: 10,
+                        cy:
+                            CENTRO_Y +
+                            ponto[1],
 
-                fill: COR_FUNDO,
+                        r: 9,
 
-                stroke:
-                    COR_PRINCIPAL,
+                        fill:
+                            COR_FUNDO,
 
-                "stroke-width":
-                    1.5
+                        stroke:
+                            COR_PRINCIPAL,
 
-            })
+                        "stroke-width":
+                            1.5
 
-        );
+                    }
+                )
 
-    });
+            );
+
+        }
+    );
 
 }
 
 
 /* ============================================================
-   11. ESTRELA CENTRAL
+   16. ESTRELA CENTRAL
    ============================================================ */
 
-
-/*
-   Estrela de oito pontas.
-*/
 function criarEstrelaCentral() {
 
     let pontos = [];
 
     const quantidade = 16;
 
-    for (let i = 0; i < quantidade; i++) {
+
+    for (
+        let i = 0;
+        i < quantidade;
+        i++
+    ) {
 
         const raio =
             i % 2 === 0
                 ? 145
                 : 65;
 
+
         const angulo =
             -Math.PI / 2 +
-            i * Math.PI * 2 / quantidade;
+            i *
+            Math.PI *
+            2 /
+            quantidade;
+
 
         const x =
             CENTRO_X +
             Math.cos(angulo) *
             raio;
 
+
         const y =
             CENTRO_Y +
             Math.sin(angulo) *
             raio;
+
 
         pontos.push(
             `${x},${y}`
         );
 
     }
+
 
     adicionar(
 
@@ -707,12 +827,14 @@ function criarEstrelaCentral() {
             points:
                 pontos.join(" "),
 
-            fill: "none",
+            fill:
+                "none",
 
             stroke:
                 COR_PRINCIPAL,
 
-            "stroke-width": 1.5
+            "stroke-width":
+                1.5
 
         })
 
@@ -722,41 +844,169 @@ function criarEstrelaCentral() {
 
 
 /* ============================================================
-   12. EFEITO E NÍVEL
+   17. PONTOS CARDINAIS
    ============================================================ */
 
+function criarPontosCardeais() {
 
-/*
-   Obtém:
+    const pontos = [
 
-   "Fortalecimento 3"
+        [400, 25],
 
-   como:
+        [775, 400],
 
-   nome = Fortalecimento
-   nivel = 3
-*/
+        [400, 775],
+
+        [25, 400]
+
+    ];
+
+
+    pontos.forEach(
+        ponto => {
+
+            adicionar(
+
+                criarElemento(
+                    "circle",
+                    {
+
+                        cx:
+                            ponto[0],
+
+                        cy:
+                            ponto[1],
+
+                        r: 6,
+
+                        fill:
+                            COR_FUNDO,
+
+                        stroke:
+                            COR_PRINCIPAL,
+
+                        "stroke-width":
+                            2
+
+                    }
+                )
+
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   18. CRUZ CENTRAL
+   ============================================================ */
+
+function criarCruzCentral() {
+
+    adicionar(
+
+        criarElemento("line", {
+
+            x1: 375,
+
+            y1: 400,
+
+            x2: 425,
+
+            y2: 400,
+
+            stroke:
+                COR_SECUNDARIA,
+
+            "stroke-width":
+                1
+
+        })
+
+    );
+
+
+    adicionar(
+
+        criarElemento("line", {
+
+            x1: 400,
+
+            y1: 375,
+
+            x2: 400,
+
+            y2: 425,
+
+            stroke:
+                COR_SECUNDARIA,
+
+            "stroke-width":
+                1
+
+        })
+
+    );
+
+
+    adicionar(
+
+        criarElemento("circle", {
+
+            cx: 400,
+
+            cy: 400,
+
+            r: 7,
+
+            fill:
+                COR_FUNDO,
+
+            stroke:
+                COR_PRINCIPAL,
+
+            "stroke-width":
+                1.5
+
+        })
+
+    );
+
+}
+
+
+/* ============================================================
+   19. EFEITO + NÍVEL
+   ============================================================ */
+
 function obterEfeito() {
 
     const valor =
         efeito.value.trim();
+
 
     const resultado =
         valor.match(
             /^(.*?)(?:\s+(\d+))?$/
         );
 
+
     if (!resultado) {
 
         return {
 
-            nome: valor,
+            nome:
+                valor,
 
-            nivel: 1
+            nivel:
+                1
 
         };
 
     }
+
 
     return {
 
@@ -764,7 +1014,9 @@ function obterEfeito() {
             resultado[1],
 
         nivel:
-            Number(resultado[2] || 1)
+            Number(
+                resultado[2] || 1
+            )
 
     };
 
@@ -772,36 +1024,22 @@ function obterEfeito() {
 
 
 /* ============================================================
-   13. CONSTRUÇÃO DA PALAVRA MÁGICA
+   20. CONSTRUIR TRADUÇÃO
    ============================================================ */
 
-
-/*
-   Cria a frase que será transformada
-   em símbolos.
-
-   Exemplo:
-
-   Fortalecimento 2
-   Água
-   Explosão
-
-   vira:
-
-   Fortalecimento Fortalecimento Água Explosão
-*/
 function construirTraducao() {
 
     const dados =
         obterEfeito();
 
+
     let palavras = [];
 
 
     /*
-       Repete o efeito de acordo
-       com seu nível.
+       Repetição do efeito.
     */
+
     for (
         let i = 0;
         i < dados.nivel;
@@ -816,16 +1054,18 @@ function construirTraducao() {
 
 
     /*
-       Adiciona elemento.
+       Elemento.
     */
+
     palavras.push(
         elemento.value
     );
 
 
     /*
-       Adiciona forma.
+       Forma.
     */
+
     palavras.push(
         forma.value
     );
@@ -837,82 +1077,95 @@ function construirTraducao() {
 
 
 /* ============================================================
-   14. CRIAÇÃO DAS LETRAS
+   21. PALAVRAS DA MAGIA
    ============================================================ */
 
+function obterPalavrasMagia() {
 
-/*
-   Converte uma frase para:
+    const dados =
+        obterEfeito();
 
-   letras individuais.
 
-   Exemplo:
+    let palavras = [];
 
-   "Agua"
 
-   vira:
+    for (
+        let i = 0;
+        i < dados.nivel;
+        i++
+    ) {
 
-   A G U A
-*/
-function obterLetras(texto) {
+        palavras.push(
+            dados.nome
+        );
 
-    return somenteLetras(texto)
-        .split("");
+    }
+
+
+    palavras.push(
+        elemento.value
+    );
+
+
+    palavras.push(
+        forma.value
+    );
+
+
+    return palavras;
 
 }
 
 
 /* ============================================================
-   15. LETRAS DE FALLBACK
+   22. CRIAR LETRA NORMAL COMO FALLBACK
    ============================================================ */
 
-
-/*
-   Se a imagem da letra não existir,
-   mostramos a letra normal.
-
-   Isso evita que o círculo fique
-   quebrado.
-*/
 function criarLetraFallback(
     letra,
     x,
     y,
-    angulo
+    angulo,
+    tamanho
 ) {
 
     const texto =
-        criarElemento("text", {
+        criarElemento(
+            "text",
+            {
 
-            x: x,
+                x: x,
 
-            y: y,
+                y: y,
 
-            fill:
-                COR_PRINCIPAL,
+                fill:
+                    COR_PRINCIPAL,
 
-            "font-size":
-                17,
+                "font-size":
+                    tamanho,
 
-            "font-family":
-                "serif",
+                "font-family":
+                    "Georgia, serif",
 
-            "font-weight":
-                "bold",
+                "font-weight":
+                    "bold",
 
-            "text-anchor":
-                "middle",
+                "text-anchor":
+                    "middle",
 
-            "dominant-baseline":
-                "middle",
+                "dominant-baseline":
+                    "middle",
 
-            transform:
-                `rotate(${angulo} ${x} ${y})`
+                transform:
+                    `rotate(${angulo} ${x} ${y})`
 
-        });
+            }
+        );
+
 
     texto.textContent =
-        letra.toUpperCase();
+        letra;
+
 
     adicionar(texto);
 
@@ -920,14 +1173,9 @@ function criarLetraFallback(
 
 
 /* ============================================================
-   16. IMAGENS DAS LETRAS
+   23. CRIAR IMAGEM DA LETRA
    ============================================================ */
 
-
-/*
-   Cria uma imagem SVG para representar
-   uma letra.
-*/
 function criarImagemLetra(
     letra,
     x,
@@ -936,48 +1184,76 @@ function criarImagemLetra(
     tamanho
 ) {
 
+    /*
+       Se não existir no mapa,
+       usa fallback.
+    */
+
+    if (!letras[letra]) {
+
+        criarLetraFallback(
+            letra,
+            x,
+            y,
+            angulo,
+            tamanho
+        );
+
+        return;
+
+    }
+
+
     const imagem =
-        criarElemento("image", {
+        criarElemento(
+            "image",
+            {
 
-            x:
-                x - tamanho / 2,
+                x:
+                    x -
+                    tamanho / 2,
 
-            y:
-                y - tamanho / 2,
+                y:
+                    y -
+                    tamanho / 2,
 
-            width:
-                tamanho,
+                width:
+                    tamanho,
 
-            height:
-                tamanho,
+                height:
+                    tamanho,
 
-            href:
-                letras[letra],
+                href:
+                    letras[letra],
 
-            preserveAspectRatio:
-                "xMidYMid meet",
+                preserveAspectRatio:
+                    "xMidYMid meet",
 
-            transform:
-                `rotate(${angulo} ${x} ${y})`
+                transform:
+                    `rotate(${angulo} ${x} ${y})`
 
-        });
+            }
+        );
 
 
     /*
-       Caso a imagem não exista,
-       troca automaticamente pela letra.
+       Se a imagem não carregar,
+       usamos a letra normal.
     */
+
     imagem.addEventListener(
         "error",
         function () {
 
             imagem.remove();
 
+
             criarLetraFallback(
                 letra,
                 x,
                 y,
-                angulo
+                angulo,
+                tamanho
             );
 
         }
@@ -990,40 +1266,49 @@ function criarImagemLetra(
 
 
 /* ============================================================
-   17. TEXTO CIRCULAR
+   24. TRANSFORMAR TEXTO EM LETRAS
    ============================================================ */
 
+function obterLetras(texto) {
 
-/*
-   Coloca todas as letras de uma palavra
-   ao redor de um círculo.
+    return somenteLetras(texto)
+        .split("");
 
-   O texto é distribuído uniformemente.
-*/
+}
+
+
+/* ============================================================
+   25. TEXTO CIRCULAR
+   ============================================================ */
+
 function colocarTextoCircular(
     texto,
-    raio = 325,
-    tamanho = TAMANHO_LETRA,
+    raio,
+    tamanho,
     inicio = -90
 ) {
 
-    const letrasTexto =
+    const lista =
         obterLetras(texto);
 
-    if (!letrasTexto.length)
+
+    if (!lista.length)
         return;
 
 
     const quantidade =
-        letrasTexto.length;
+        lista.length;
 
 
-    letrasTexto.forEach(
+    lista.forEach(
         (letra, indice) => {
 
             let angulo;
 
-            if (quantidade === 1) {
+
+            if (
+                quantidade === 1
+            ) {
 
                 angulo =
                     inicio;
@@ -1033,14 +1318,18 @@ function colocarTextoCircular(
                 angulo =
                     inicio +
                     indice *
-                    (360 / quantidade);
+                    (
+                        360 /
+                        quantidade
+                    );
 
             }
 
 
             const radianos =
                 angulo *
-                Math.PI / 180;
+                Math.PI /
+                180;
 
 
             const x =
@@ -1048,18 +1337,30 @@ function colocarTextoCircular(
                 Math.cos(radianos) *
                 raio;
 
+
             const y =
                 CENTRO_Y +
                 Math.sin(radianos) *
                 raio;
 
 
+            /*
+               +90 deixa o símbolo
+               acompanhando o círculo.
+            */
+
             criarImagemLetra(
+
                 letra,
+
                 x,
+
                 y,
+
                 angulo + 90,
+
                 tamanho
+
             );
 
         }
@@ -1069,150 +1370,56 @@ function colocarTextoCircular(
 
 
 /* ============================================================
-   18. TEXTO EM ANEL
+   26. ESCRITA MÁGICA
    ============================================================ */
 
-
-/*
-   Em vez de colocar tudo em um único círculo,
-   podemos dividir as palavras em anéis.
-
-   Isso deixa o símbolo mais parecido
-   com um círculo mágico.
-*/
-function colocarPalavrasEmAnel(
-    palavras
-) {
-
-    const raios = [
-
-        330,
-        300,
-        270,
-        240,
-        210,
-        180
-
-    ];
-
-
-    palavras.forEach(
-        (palavra, indice) => {
-
-            const raio =
-                raios[
-                    indice %
-                    raios.length
-                ];
-
-
-            colocarTextoCircular(
-                palavra,
-                raio,
-                22,
-                -90
-            );
-
-        }
-    );
-
-}
-
-
-/* ============================================================
-   19. SEPARAÇÃO DA MAGIA
-   ============================================================ */
-
-
-/*
-   Obtém as palavras que compõem a magia.
-*/
-function obterPalavrasMagia() {
+function criarEscritaMagica() {
 
     const dados =
         obterEfeito();
 
-    let palavras = [];
+
+    /*
+       Efeito.
+    */
+
+    colocarTextoCircular(
+        dados.nome,
+        330,
+        25,
+        -90
+    );
 
 
     /*
-       Efeito repetido.
+       Nível 2.
     */
-    for (
-        let i = 0;
-        i < dados.nivel;
-        i++
+
+    if (
+        dados.nivel >= 2
     ) {
 
-        palavras.push(
-            dados.nome
+        colocarTextoCircular(
+            dados.nome,
+            295,
+            23,
+            -90
         );
 
     }
 
 
     /*
-       Elemento.
+       Nível 3.
     */
-    palavras.push(
-        elemento.value
-    );
 
-
-    /*
-       Forma.
-    */
-    palavras.push(
-        forma.value
-    );
-
-
-    return palavras;
-
-}
-
-
-/* ============================================================
-   20. CÍRCULO DAS PALAVRAS
-   ============================================================ */
-
-
-/*
-   Cria anéis específicos para cada
-   componente da magia.
-*/
-function criarEscritaMagica() {
-
-    const palavras =
-        obterPalavrasMagia();
-
-
-    /*
-       Primeiro anel:
-       efeito.
-    */
-    const dados =
-        obterEfeito();
-
-
-    colocarTextoCircular(
-        dados.nome,
-        325,
-        23,
-        -90
-    );
-
-
-    /*
-       Se o efeito for nível 2,
-       3 ou 4, ele aparece novamente
-       em outros anéis.
-    */
-    if (dados.nivel >= 2) {
+    if (
+        dados.nivel >= 3
+    ) {
 
         colocarTextoCircular(
             dados.nome,
-            285,
+            260,
             21,
             -90
         );
@@ -1220,11 +1427,17 @@ function criarEscritaMagica() {
     }
 
 
-    if (dados.nivel >= 3) {
+    /*
+       Nível 4.
+    */
+
+    if (
+        dados.nivel >= 4
+    ) {
 
         colocarTextoCircular(
             dados.nome,
-            245,
+            225,
             19,
             -90
         );
@@ -1232,36 +1445,30 @@ function criarEscritaMagica() {
     }
 
 
-    if (dados.nivel >= 4) {
-
-        colocarTextoCircular(
-            dados.nome,
-            205,
-            17,
-            -90
-        );
-
-    }
-
-
     /*
-       Elemento.
+       ELEMENTO
+
+       Fica em um anel externo.
     */
+
     colocarTextoCircular(
         elemento.value,
         350,
-        20,
+        22,
         0
     );
 
 
     /*
-       Forma.
+       FORMA
+
+       Fica em um anel interno.
     */
+
     colocarTextoCircular(
         forma.value,
-        175,
-        19,
+        180,
+        21,
         0
     );
 
@@ -1269,139 +1476,9 @@ function criarEscritaMagica() {
 
 
 /* ============================================================
-   21. MARCAS DOS PONTOS CARDINAIS
+   27. NOME PERSONALIZADO
    ============================================================ */
 
-
-/*
-   Pequenas marcas em quatro pontos.
-*/
-function criarPontosCardeais() {
-
-    const pontos = [
-
-        [400, 25],
-        [775, 400],
-        [400, 775],
-        [25, 400]
-
-    ];
-
-
-    pontos.forEach(ponto => {
-
-        adicionar(
-
-            criarElemento("circle", {
-
-                cx:
-                    ponto[0],
-
-                cy:
-                    ponto[1],
-
-                r: 6,
-
-                fill:
-                    COR_FUNDO,
-
-                stroke:
-                    COR_PRINCIPAL,
-
-                "stroke-width":
-                    2
-
-            })
-
-        );
-
-    });
-
-}
-
-
-/* ============================================================
-   22. CRUZ CENTRAL
-   ============================================================ */
-
-
-/*
-   Pequena cruz no centro.
-*/
-function criarCruzCentral() {
-
-    adicionar(
-
-        criarElemento("line", {
-
-            x1: 375,
-            y1: 400,
-
-            x2: 425,
-            y2: 400,
-
-            stroke:
-                COR_SECUNDARIA,
-
-            "stroke-width": 1
-
-        })
-
-    );
-
-
-    adicionar(
-
-        criarElemento("line", {
-
-            x1: 400,
-            y1: 375,
-
-            x2: 400,
-            y2: 425,
-
-            stroke:
-                COR_SECUNDARIA,
-
-            "stroke-width": 1
-
-        })
-
-    );
-
-
-    adicionar(
-
-        criarElemento("circle", {
-
-            cx: 400,
-            cy: 400,
-
-            r: 8,
-
-            fill:
-                COR_FUNDO,
-
-            stroke:
-                COR_PRINCIPAL,
-
-            "stroke-width": 1.5
-
-        })
-
-    );
-
-}
-
-
-/* ============================================================
-   23. NOME DA MAGIA
-   ============================================================ */
-
-
-/*
-   Mostra o nome personalizado no centro.
-*/
 function criarNomeCentral() {
 
     const nome =
@@ -1413,22 +1490,26 @@ function criarNomeCentral() {
 
 
     /*
-       Linha decorativa superior.
+       Linha acima.
     */
+
     adicionar(
 
         criarElemento("line", {
 
-            x1: 330,
-            y1: 350,
+            x1: 320,
 
-            x2: 470,
-            y2: 350,
+            y1: 355,
+
+            x2: 480,
+
+            y2: 355,
 
             stroke:
                 COR_SECUNDARIA,
 
-            "stroke-width": 1
+            "stroke-width":
+                1
 
         })
 
@@ -1438,31 +1519,35 @@ function criarNomeCentral() {
     /*
        Nome.
     */
+
     const texto =
-        criarElemento("text", {
+        criarElemento(
+            "text",
+            {
 
-            x:
-                CENTRO_X,
+                x:
+                    CENTRO_X,
 
-            y:
-                355,
+                y:
+                    350,
 
-            fill:
-                "#ffffff",
+                fill:
+                    "#ffffff",
 
-            "font-size":
-                16,
+                "font-size":
+                    16,
 
-            "font-family":
-                "serif",
+                "font-family":
+                    "Georgia, serif",
 
-            "font-weight":
-                "bold",
+                "font-weight":
+                    "bold",
 
-            "text-anchor":
-                "middle"
+                "text-anchor":
+                    "middle"
 
-        });
+            }
+        );
 
 
     texto.textContent =
@@ -1475,13 +1560,9 @@ function criarNomeCentral() {
 
 
 /* ============================================================
-   24. FUNDO DO SVG
+   28. FUNDO
    ============================================================ */
 
-
-/*
-   Fundo preto/azul.
-*/
 function criarFundo() {
 
     adicionar(
@@ -1489,9 +1570,11 @@ function criarFundo() {
         criarElemento("rect", {
 
             x: 0,
+
             y: 0,
 
             width: 800,
+
             height: 800,
 
             fill:
@@ -1505,13 +1588,9 @@ function criarFundo() {
 
 
 /* ============================================================
-   25. BRILHO CENTRAL
+   29. GRADIENTE CENTRAL
    ============================================================ */
 
-
-/*
-   Cria um brilho sutil usando gradiente.
-*/
 function criarGradiente() {
 
     const defs =
@@ -1533,11 +1612,16 @@ function criarGradiente() {
         criarElemento(
             "stop",
             {
-                offset: "0%",
+
+                offset:
+                    "0%",
+
                 "stop-color":
-                    "#202a4d",
+                    "#26345e",
+
                 "stop-opacity":
-                    "0.8"
+                    "0.65"
+
             }
         )
 
@@ -1549,11 +1633,16 @@ function criarGradiente() {
         criarElemento(
             "stop",
             {
-                offset: "70%",
+
+                offset:
+                    "65%",
+
                 "stop-color":
-                    "#0b1020",
+                    "#10172c",
+
                 "stop-opacity":
-                    "0.4"
+                    "0.3"
+
             }
         )
 
@@ -1565,25 +1654,30 @@ function criarGradiente() {
         criarElemento(
             "stop",
             {
-                offset: "100%",
+
+                offset:
+                    "100%",
+
                 "stop-color":
                     "#05070d",
+
                 "stop-opacity":
                     "0"
+
             }
         )
 
     );
 
 
-    defs.appendChild(gradiente);
+    defs.appendChild(
+        gradiente
+    );
+
 
     adicionar(defs);
 
 
-    /*
-       Aplicar brilho.
-    */
     adicionar(
 
         criarElemento("circle", {
@@ -1595,7 +1689,7 @@ function criarGradiente() {
                 CENTRO_Y,
 
             r:
-                300,
+                310,
 
             fill:
                 "url(#brilhoCentral)"
@@ -1608,31 +1702,27 @@ function criarGradiente() {
 
 
 /* ============================================================
-   26. GERAÇÃO COMPLETA
+   30. GERAR CÍRCULO
    ============================================================ */
 
-
-/*
-   Esta é a função principal.
-
-   Ela apaga o círculo anterior
-   e cria tudo novamente.
-*/
 function gerarCirculo() {
 
     /*
-       Limpa o SVG.
+       Limpar o círculo antigo.
     */
+
     svg.innerHTML = "";
 
 
     /*
-       Configuração.
+       Configuração SVG.
     */
+
     svg.setAttribute(
         "viewBox",
         "0 0 800 800"
     );
+
 
     svg.setAttribute(
         "xmlns",
@@ -1643,27 +1733,31 @@ function gerarCirculo() {
     /*
        Fundo.
     */
+
     criarFundo();
 
 
     /*
-       Gradiente.
+       Brilho.
     */
+
     criarGradiente();
 
 
     /*
        Círculos.
     */
+
     criarCirculosPrincipais();
 
 
     /*
        Linhas radiais.
     */
+
     criarLinhasRadiais(
         16,
-        285,
+        280,
         350
     );
 
@@ -1671,73 +1765,74 @@ function gerarCirculo() {
     /*
        Geometria.
     */
+
     criarGeometria();
 
 
     /*
-       Pontos.
+       Decoração.
     */
+
     criarPontosDecorativos();
 
-
-    /*
-       Losangos.
-    */
     criarLosangos();
 
 
     /*
        Árvore da Vida.
     */
+
     criarArvoreDaVida();
 
 
     /*
        Estrela.
     */
+
     criarEstrelaCentral();
 
 
     /*
-       Escrita mágica.
+       Escrita.
     */
+
     criarEscritaMagica();
 
 
     /*
        Pontos cardeais.
     */
+
     criarPontosCardeais();
 
 
     /*
-       Cruz central.
+       Cruz.
     */
+
     criarCruzCentral();
 
 
     /*
        Nome.
     */
+
     criarNomeCentral();
 
 
     /*
-       Atualizar informações.
+       Informações.
     */
+
     atualizarInformacoes();
 
 }
 
 
 /* ============================================================
-   27. INFORMAÇÕES DA INTERFACE
+   31. ATUALIZAR INFORMAÇÕES
    ============================================================ */
 
-
-/*
-   Atualiza o painel "Composição".
-*/
 function atualizarInformacoes() {
 
     if (mostrarEfeito) {
@@ -1775,13 +1870,9 @@ function atualizarInformacoes() {
 
 
 /* ============================================================
-   28. TAMANHO DO CÍRCULO
+   32. TAMANHO
    ============================================================ */
 
-
-/*
-   Atualiza o tamanho visual.
-*/
 function atualizarTamanho() {
 
     if (!tamanho)
@@ -1807,13 +1898,14 @@ function atualizarTamanho() {
 
 
 /* ============================================================
-   29. EVENTOS
+   33. EVENTOS
    ============================================================ */
 
 
 /*
-   Botão GERAR.
+   Botão gerar.
 */
+
 if (botaoGerar) {
 
     botaoGerar.addEventListener(
@@ -1825,8 +1917,9 @@ if (botaoGerar) {
 
 
 /*
-   Mudança de efeito.
+   Efeito.
 */
+
 if (efeito) {
 
     efeito.addEventListener(
@@ -1838,8 +1931,9 @@ if (efeito) {
 
 
 /*
-   Mudança de elemento.
+   Elemento.
 */
+
 if (elemento) {
 
     elemento.addEventListener(
@@ -1851,8 +1945,9 @@ if (elemento) {
 
 
 /*
-   Mudança de forma.
+   Forma.
 */
+
 if (forma) {
 
     forma.addEventListener(
@@ -1864,8 +1959,9 @@ if (forma) {
 
 
 /*
-   Nome personalizado.
+   Nome.
 */
+
 if (nomeMagia) {
 
     nomeMagia.addEventListener(
@@ -1879,6 +1975,7 @@ if (nomeMagia) {
 /*
    Tamanho.
 */
+
 if (tamanho) {
 
     tamanho.addEventListener(
@@ -1890,13 +1987,9 @@ if (tamanho) {
 
 
 /* ============================================================
-   30. DOWNLOAD SVG
+   34. DOWNLOAD SVG
    ============================================================ */
 
-
-/*
-   Cria uma cópia do SVG para download.
-*/
 function baixarSVG() {
 
     const copia =
@@ -1932,44 +2025,56 @@ function baixarSVG() {
         document.createElement("a");
 
 
-    link.href = url;
+    link.href =
+        url;
+
 
     link.download =
         "circulo-magico.svg";
 
 
-    document.body.appendChild(link);
+    document.body.appendChild(
+        link
+    );
+
 
     link.click();
 
-    document.body.removeChild(link);
+
+    document.body.removeChild(
+        link
+    );
 
 
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(
+        url
+    );
 
 }
 
 
 /* ============================================================
-   31. CONVERSÃO PARA PNG
+   35. DOWNLOAD PNG
    ============================================================ */
 
-
-/*
-   Esta função transforma o SVG em PNG.
-
-   O PNG terá 1600 x 1600 pixels.
-*/
 function baixarPNG() {
 
-    const svgData =
+    /*
+       Serializar SVG.
+    */
+
+    const dadosSVG =
         new XMLSerializer()
         .serializeToString(svg);
 
 
+    /*
+       Criar Blob.
+    */
+
     const blob =
         new Blob(
-            [svgData],
+            [dadosSVG],
             {
                 type:
                     "image/svg+xml;charset=utf-8"
@@ -1977,9 +2082,17 @@ function baixarPNG() {
         );
 
 
+    /*
+       Criar URL temporária.
+    */
+
     const url =
         URL.createObjectURL(blob);
 
+
+    /*
+       Criar imagem.
+    */
 
     const imagem =
         new Image();
@@ -1987,17 +2100,23 @@ function baixarPNG() {
 
     imagem.onload = function () {
 
+        /*
+           PNG final.
+        */
+
         const canvas =
             document.createElement(
                 "canvas"
             );
 
 
-        const tamanhoPNG = 1600;
+        const tamanhoPNG =
+            1600;
 
 
         canvas.width =
             tamanhoPNG;
+
 
         canvas.height =
             tamanhoPNG;
@@ -2012,6 +2131,7 @@ function baixarPNG() {
         /*
            Fundo.
         */
+
         contexto.fillStyle =
             COR_FUNDO;
 
@@ -2027,6 +2147,7 @@ function baixarPNG() {
         /*
            Desenhar SVG.
         */
+
         contexto.drawImage(
             imagem,
             0,
@@ -2037,8 +2158,9 @@ function baixarPNG() {
 
 
         /*
-           Criar arquivo.
+           Criar link.
         */
+
         const link =
             document.createElement(
                 "a"
@@ -2075,32 +2197,32 @@ function baixarPNG() {
     };
 
 
-    imagem.onerror = function () {
+    imagem.onerror =
+        function () {
 
-        URL.revokeObjectURL(url);
-
-        alert(
-            "Não foi possível transformar o círculo em PNG. " +
-            "Você ainda pode baixar o SVG."
-        );
-
-    };
+            URL.revokeObjectURL(
+                url
+            );
 
 
-    imagem.src = url;
+            alert(
+                "Não foi possível gerar o PNG. " +
+                "Tente baixar o SVG."
+            );
+
+        };
+
+
+    imagem.src =
+        url;
 
 }
 
 
 /* ============================================================
-   32. BOTÃO DE DOWNLOAD
+   36. BOTÃO BAIXAR
    ============================================================ */
 
-
-/*
-   O botão existente no HTML
-   continua baixando PNG.
-*/
 if (botaoBaixar) {
 
     botaoBaixar.addEventListener(
@@ -2111,18 +2233,12 @@ if (botaoBaixar) {
 }
 
 
-/* ============================================================
-   33. DUPLO CLIQUE NO BOTÃO DE DOWNLOAD
-   ============================================================ */
-
-
 /*
-   Shift + clique no botão:
-   baixa SVG.
+   Shift + clique:
 
-   Isso é útil caso o navegador bloqueie
-   o PNG por causa das imagens externas.
+   baixa SVG em vez de PNG.
 */
+
 if (botaoBaixar) {
 
     botaoBaixar.addEventListener(
@@ -2144,14 +2260,10 @@ if (botaoBaixar) {
 
 
 /* ============================================================
-   34. TESTE DAS IMAGENS
+   37. VERIFICAR IMAGEM
    ============================================================ */
 
-
-/*
-   Verifica se uma letra existe.
-*/
-function testarLetra(letra) {
+function verificarImagem(letra) {
 
     return new Promise(
         resolver => {
@@ -2161,11 +2273,19 @@ function testarLetra(letra) {
 
 
             imagem.onload =
-                () => resolver(true);
+                function () {
+
+                    resolver(true);
+
+                };
 
 
             imagem.onerror =
-                () => resolver(false);
+                function () {
+
+                    resolver(false);
+
+                };
 
 
             imagem.src =
@@ -2177,23 +2297,27 @@ function testarLetra(letra) {
 }
 
 
-/*
-   Verifica todas as letras.
+/* ============================================================
+   38. VERIFICAR ALFABETO
+   ============================================================ */
 
-   Não impede o programa de funcionar.
-*/
 async function verificarAlfabeto() {
 
     const resultado = {};
 
 
+    const alfabeto =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZÇ";
+
+
     for (
-        const letra of
-        "abcdefghijklmnopqrstuvwxyz"
+        const letra of alfabeto
     ) {
 
         resultado[letra] =
-            await testarLetra(letra);
+            await verificarImagem(
+                letra
+            );
 
     }
 
@@ -2204,23 +2328,25 @@ async function verificarAlfabeto() {
 
 
 /* ============================================================
-   35. PREPARAÇÃO INICIAL
+   39. INICIALIZAÇÃO
    ============================================================ */
 
 
 /*
-   Define tamanho inicial.
+   Atualiza o tamanho.
 */
+
 atualizarTamanho();
 
 
 /*
-   Gera o círculo assim que a página carrega.
+   Gera o círculo automaticamente.
 */
+
 gerarCirculo();
 
 
 /* ============================================================
-   FIM
+   FIM DO SCRIPT
    ============================================================ */
 ```
