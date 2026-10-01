@@ -279,3 +279,355 @@ function adicionarCirculo(
 }
 
 
+/* =========================================================
+   LINHAS RADIAIS
+========================================================= */
+
+function adicionarLinhasRadiais(
+    quantidade,
+    raio
+) {
+
+    for (
+        let i = 0;
+        i < quantidade;
+        i++
+    ) {
+
+        const angulo =
+            (Math.PI * 2 / quantidade)
+            * i;
+
+        const x =
+            CX +
+            Math.cos(angulo)
+            * raio;
+
+        const y =
+            CY +
+            Math.sin(angulo)
+            * raio;
+
+
+        const linha =
+            criarElemento(
+                "line",
+                {
+
+                    x1: CX,
+                    y1: CY,
+
+                    x2: x,
+                    y2: y,
+
+                    stroke: "#8d9bd0",
+
+                    "stroke-width": 0.8,
+
+                    opacity: 0.35
+
+                }
+            );
+
+
+        svg.appendChild(linha);
+
+    }
+
+}
+
+
+/* =========================================================
+   POLÍGONO
+========================================================= */
+
+function adicionarPoligono(
+    lados,
+    raio
+) {
+
+    let pontos = [];
+
+
+    for (
+        let i = 0;
+        i < lados;
+        i++
+    ) {
+
+        const angulo =
+            -Math.PI / 2 +
+            (Math.PI * 2 / lados) * i;
+
+
+        const x =
+            CX +
+            Math.cos(angulo)
+            * raio;
+
+        const y =
+            CY +
+            Math.sin(angulo)
+            * raio;
+
+
+        pontos.push(
+            `${x},${y}`
+        );
+
+    }
+
+
+    const poligono =
+        criarElemento(
+            "polygon",
+            {
+
+                points:
+                    pontos.join(" "),
+
+                fill: "none",
+
+                stroke: "#dce4ff",
+
+                "stroke-width": 1.2,
+
+                opacity: 0.8
+
+            }
+        );
+
+
+    svg.appendChild(poligono);
+
+}
+
+
+/* =========================================================
+   ESTRELA
+========================================================= */
+
+function adicionarEstrela(
+    pontos,
+    raioExterno,
+    raioInterno
+) {
+
+    let coordenadas = [];
+
+
+    for (
+        let i = 0;
+        i < pontos * 2;
+        i++
+    ) {
+
+        const raio =
+            i % 2 === 0
+                ? raioExterno
+                : raioInterno;
+
+
+        const angulo =
+            -Math.PI / 2 +
+            (Math.PI * 2 /
+                (pontos * 2))
+            * i;
+
+
+        const x =
+            CX +
+            Math.cos(angulo)
+            * raio;
+
+        const y =
+            CY +
+            Math.sin(angulo)
+            * raio;
+
+
+        coordenadas.push(
+            `${x},${y}`
+        );
+
+    }
+
+
+    const estrela =
+        criarElemento(
+            "polygon",
+            {
+
+                points:
+                    coordenadas.join(" "),
+
+                fill: "none",
+
+                stroke: "#dce4ff",
+
+                "stroke-width": 1.4,
+
+                opacity: 0.8
+
+            }
+        );
+
+
+    svg.appendChild(estrela);
+
+}
+
+
+/* =========================================================
+   ÁRVORE DA VIDA
+
+   Representação geométrica inspirada nas
+   sefirot da Cabala.
+========================================================= */
+
+function adicionarArvoreDaVida() {
+
+    const posicoes = [
+
+        [0, -170],
+
+        [-90, -90],
+        [90, -90],
+
+        [-100, 0],
+        [0, 0],
+        [100, 0],
+
+        [-90, 90],
+        [90, 90],
+
+        [0, 170]
+
+    ];
+
+
+    const centroX = CX;
+    const centroY = CY;
+
+
+    /*
+       CONEXÕES
+    */
+
+    const conexoes = [
+
+        [0, 1],
+        [0, 2],
+
+        [1, 3],
+        [1, 4],
+
+        [2, 4],
+        [2, 5],
+
+        [3, 4],
+        [4, 5],
+
+        [3, 6],
+        [4, 6],
+
+        [4, 7],
+        [5, 7],
+
+        [6, 8],
+        [7, 8],
+
+        [6, 7]
+
+    ];
+
+
+    for (
+        const [a, b]
+        of conexoes
+    ) {
+
+        const p1 =
+            posicoes[a];
+
+        const p2 =
+            posicoes[b];
+
+
+        const linha =
+            criarElemento(
+                "line",
+                {
+
+                    x1:
+                        centroX + p1[0],
+
+                    y1:
+                        centroY + p1[1],
+
+                    x2:
+                        centroX + p2[0],
+
+                    y2:
+                        centroY + p2[1],
+
+                    stroke:
+                        "#8997d2",
+
+                    "stroke-width":
+                        0.7,
+
+                    opacity:
+                        0.45
+
+                }
+            );
+
+
+        svg.appendChild(linha);
+
+    }
+
+
+    /*
+       SEFIROT
+    */
+
+    for (
+        const [x, y]
+        of posicoes
+    ) {
+
+        const circulo =
+            criarElemento(
+                "circle",
+                {
+
+                    cx:
+                        centroX + x,
+
+                    cy:
+                        centroY + y,
+
+                    r: 10,
+
+                    fill:
+                        "#090d19",
+
+                    stroke:
+                        "#dce4ff",
+
+                    "stroke-width":
+                        1.3
+
+                }
+            );
+
+
+        svg.appendChild(circulo);
+
+    }
+
+}
+
+
