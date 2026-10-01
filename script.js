@@ -1,29 +1,5 @@
-```javascript
-/* =========================================================
-   GERADOR DE CÍRCULOS MÁGICOS
-========================================================= */
-
-
-/* =========================================================
-   ÁREA DO ALFABETO
-
-   COLOQUE AQUI OS CAMINHOS DAS IMAGENS DAS SUAS LETRAS.
-
-   Exemplo:
-
-   a: "letras/a.png"
-
-   b: "letras/b.png"
-
-   etc.
-
-   Por enquanto o sistema usa letras normais caso
-   você ainda não tenha colocado as imagens.
-========================================================= */
-
-const alfabeto = {
-
-    a: "A.png",
+const letras = {};
+ a: "A.png",
     b: "B.png",
     c: "C.png",
     d: "D.png",
@@ -50,44 +26,24 @@ const alfabeto = {
     y: "Y.png",
     z: "Z.png",
     ç: "Ç.png"
+```javascript
+"abcdefghijklmnopqrstuvwxyzç".split("").forEach(letra => {
+    letras[letra] = `letras/${letra}.png`;
+});
 
-};
-
-
-/* =========================================================
-   ELEMENTOS HTML
-========================================================= */
 
 const svg = document.getElementById("circuloMagico");
 
-const efeitoSelect =
-    document.getElementById("efeito");
+const efeito = document.getElementById("efeito");
+const elemento = document.getElementById("elemento");
+const forma = document.getElementById("forma");
+const nome = document.getElementById("nomeMagia");
 
-const elementoSelect =
-    document.getElementById("elemento");
+const gerar = document.getElementById("gerar");
+const baixar = document.getElementById("baixar");
 
-const formaSelect =
-    document.getElementById("forma");
-
-const nomeMagia =
-    document.getElementById("nomeMagia");
-
-const gerarButton =
-    document.getElementById("gerar");
-
-const baixarButton =
-    document.getElementById("baixar");
-
-const tamanhoInput =
-    document.getElementById("tamanho");
-
-const tamanhoValor =
-    document.getElementById("tamanhoValor");
-
-
-/* =========================================================
-   INFORMAÇÕES
-========================================================= */
+const tamanho = document.getElementById("tamanho");
+const tamanhoValor = document.getElementById("tamanhoValor");
 
 const mostrarEfeito =
     document.getElementById("mostrarEfeito");
@@ -101,22 +57,10 @@ const mostrarForma =
 const mostrarTraducao =
     document.getElementById("mostrarTraducao");
 
-
-/* =========================================================
-   CONFIGURAÇÃO
-========================================================= */
-
 const CX = 400;
 const CY = 400;
 
-
-/* =========================================================
-   NORMALIZAR TEXTO
-
-   Remove acentos para encontrar as letras do alfabeto.
-========================================================= */
-
-function normalizar(texto) {
+function limparTexto(texto) {
 
     return texto
         .normalize("NFD")
@@ -125,114 +69,19 @@ function normalizar(texto) {
 
 }
 
-
-/* =========================================================
-   OBTER REPETIÇÃO
-
-   Fortalecimento 2
-   retorna:
-
-   Fortalecimento
-   Fortalecimento
-
-   Fortalecimento 4:
-
-   Fortalecimento
-   Fortalecimento
-   Fortalecimento
-   Fortalecimento
-========================================================= */
-
-function separarNivel(texto) {
-
-    const resultado = texto.match(/^(.*?)(?:\s+(\d+))?$/);
-
-    const nome = resultado[1];
-
-    const nivel = resultado[2]
-        ? parseInt(resultado[2])
-        : 1;
-
-    return {
-
-        nome: nome,
-
-        nivel: nivel
-
-    };
-
-}
-
-
-/* =========================================================
-   CONSTRUIR TEXTO MÁGICO
-========================================================= */
-
-function construirTexto() {
-
-    const efeito =
-        efeitoSelect.value;
-
-    const elemento =
-        elementoSelect.value;
-
-    const forma =
-        formaSelect.value;
-
-
-    const efeitoInfo =
-        separarNivel(efeito);
-
-
-    let partes = [];
-
-
-    /*
-       REPETE O EFEITO CONFORME O NÍVEL
-    */
-
-    for (
-        let i = 0;
-        i < efeitoInfo.nivel;
-        i++
-    ) {
-
-        partes.push(
-            efeitoInfo.nome
-        );
-
-    }
-
-
-    partes.push(elemento);
-
-    partes.push(forma);
-
-
-    return partes.join(" ");
-
-}
-
-
-/* =========================================================
-   CRIAR ELEMENTO SVG
-========================================================= */
-
-function criarElemento(tag, atributos = {}) {
+function criarSVG(tipo, atributos = {}) {
 
     const elemento =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
-            tag
+            tipo
         );
 
-    for (
-        const chave in atributos
-    ) {
+    for (const atributo in atributos) {
 
         elemento.setAttribute(
-            chave,
-            atributos[chave]
+            atributo,
+            atributos[atributo]
         );
 
     }
@@ -241,94 +90,72 @@ function criarElemento(tag, atributos = {}) {
 
 }
 
-
-/* =========================================================
-   CÍRCULO
-========================================================= */
-
 function adicionarCirculo(
     raio,
     espessura = 1,
     opacidade = 1
 ) {
 
-    const circulo =
-        criarElemento(
-            "circle",
-            {
+    const c = criarSVG(
+        "circle",
+        {
+            cx: CX,
+            cy: CY,
+            r: raio,
 
-                cx: CX,
-                cy: CY,
+            fill: "none",
 
-                r: raio,
+            stroke: "#dce4ff",
 
-                fill: "none",
+            "stroke-width": espessura,
 
-                stroke: "#dce4ff",
+            opacity: opacidade
+        }
+    );
 
-                "stroke-width":
-                    espessura,
-
-                opacity:
-                    opacidade
-
-            }
-        );
-
-    svg.appendChild(circulo);
+    svg.appendChild(c);
 
 }
 
-
-/* =========================================================
-   LINHAS RADIAIS
-========================================================= */
-
-function adicionarLinhasRadiais(
+function adicionarRadiais(
     quantidade,
     raio
 ) {
 
-    for (
-        let i = 0;
-        i < quantidade;
-        i++
-    ) {
+    for (let i = 0; i < quantidade; i++) {
 
         const angulo =
-            (Math.PI * 2 / quantidade)
-            * i;
+            i * Math.PI * 2 / quantidade;
+
 
         const x =
             CX +
-            Math.cos(angulo)
-            * raio;
+            Math.cos(angulo) *
+            raio;
+
 
         const y =
             CY +
-            Math.sin(angulo)
-            * raio;
+            Math.sin(angulo) *
+            raio;
 
 
-        const linha =
-            criarElemento(
-                "line",
-                {
+        const linha = criarSVG(
+            "line",
+            {
+                x1: CX,
+                y1: CY,
 
-                    x1: CX,
-                    y1: CY,
+                x2: x,
+                y2: y,
 
-                    x2: x,
-                    y2: y,
+                stroke: "#8997d2",
 
-                    stroke: "#8d9bd0",
+                "stroke-width": 0.7,
 
-                    "stroke-width": 0.8,
-
-                    opacity: 0.35
-
-                }
-            );
+                opacity: 0.3
+            }
+        );
 
 
         svg.appendChild(linha);
@@ -336,11 +163,6 @@ function adicionarLinhasRadiais(
     }
 
 }
-
-
-/* =========================================================
-   POLÍGONO
-========================================================= */
 
 function adicionarPoligono(
     lados,
@@ -350,40 +172,34 @@ function adicionarPoligono(
     let pontos = [];
 
 
-    for (
-        let i = 0;
-        i < lados;
-        i++
-    ) {
+    for (let i = 0; i < lados; i++) {
 
         const angulo =
             -Math.PI / 2 +
-            (Math.PI * 2 / lados) * i;
+            i * Math.PI * 2 / lados;
 
 
         const x =
             CX +
-            Math.cos(angulo)
-            * raio;
+            Math.cos(angulo) *
+            raio;
+
 
         const y =
             CY +
-            Math.sin(angulo)
-            * raio;
+            Math.sin(angulo) *
+            raio;
 
 
-        pontos.push(
-            `${x},${y}`
-        );
+        pontos.push(`${x},${y}`);
 
     }
 
 
     const poligono =
-        criarElemento(
+        criarSVG(
             "polygon",
             {
-
                 points:
                     pontos.join(" "),
 
@@ -394,7 +210,6 @@ function adicionarPoligono(
                 "stroke-width": 1.2,
 
                 opacity: 0.8
-
             }
         );
 
@@ -403,73 +218,63 @@ function adicionarPoligono(
 
 }
 
-
-/* =========================================================
-   ESTRELA
-========================================================= */
-
 function adicionarEstrela(
-    pontos,
-    raioExterno,
-    raioInterno
+    pontas,
+    externo,
+    interno
 ) {
 
-    let coordenadas = [];
+    let pontos = [];
 
 
     for (
         let i = 0;
-        i < pontos * 2;
+        i < pontas * 2;
         i++
     ) {
 
         const raio =
             i % 2 === 0
-                ? raioExterno
-                : raioInterno;
+                ? externo
+                : interno;
 
 
         const angulo =
             -Math.PI / 2 +
-            (Math.PI * 2 /
-                (pontos * 2))
-            * i;
+            i * Math.PI / pontas;
 
 
         const x =
             CX +
-            Math.cos(angulo)
-            * raio;
+            Math.cos(angulo) *
+            raio;
+
 
         const y =
             CY +
-            Math.sin(angulo)
-            * raio;
+            Math.sin(angulo) *
+            raio;
 
 
-        coordenadas.push(
-            `${x},${y}`
-        );
+        pontos.push(`${x},${y}`);
 
     }
 
 
     const estrela =
-        criarElemento(
+        criarSVG(
             "polygon",
             {
-
                 points:
-                    coordenadas.join(" "),
+                    pontos.join(" "),
 
                 fill: "none",
 
                 stroke: "#dce4ff",
 
-                "stroke-width": 1.4,
+                "stroke-width": 1.5,
 
-                opacity: 0.8
-
+                opacity: 0.85
             }
         );
 
@@ -478,17 +283,9 @@ function adicionarEstrela(
 
 }
 
+function adicionarArvore() {
 
-/* =========================================================
-   ÁRVORE DA VIDA
-
-   Representação geométrica inspirada nas
-   sefirot da Cabala.
-========================================================= */
-
-function adicionarArvoreDaVida() {
-
-    const posicoes = [
+    const pontos = [
 
         [0, -170],
 
@@ -507,158 +304,138 @@ function adicionarArvoreDaVida() {
     ];
 
 
-    const centroX = CX;
-    const centroY = CY;
-
-
-    /*
-       CONEXÕES
-    */
-
     const conexoes = [
 
-        [0, 1],
-        [0, 2],
+        [0,1],
+        [0,2],
 
-        [1, 3],
-        [1, 4],
+        [1,3],
+        [1,4],
 
-        [2, 4],
-        [2, 5],
+        [2,4],
+        [2,5],
 
-        [3, 4],
-        [4, 5],
+        [3,4],
+        [4,5],
 
-        [3, 6],
-        [4, 6],
+        [3,6],
+        [4,6],
 
-        [4, 7],
-        [5, 7],
+        [4,7],
+        [5,7],
 
-        [6, 8],
-        [7, 8],
+        [6,8],
+        [7,8],
 
-        [6, 7]
+        [6,7]
 
     ];
 
 
-    for (
-        const [a, b]
-        of conexoes
-    ) {
+    /* LINHAS DA ÁRVORE */
 
-        const p1 =
-            posicoes[a];
+    conexoes.forEach(
+        ([a,b]) => {
 
-        const p2 =
-            posicoes[b];
+            const linha =
+                criarSVG(
+                    "line",
+                    {
 
+                        x1:
+                            CX +
+                            pontos[a][0],
 
-        const linha =
-            criarElemento(
-                "line",
-                {
+                        y1:
+                            CY +
+                            pontos[a][1],
 
-                    x1:
-                        centroX + p1[0],
+                        x2:
+                            CX +
+                            pontos[b][0],
 
-                    y1:
-                        centroY + p1[1],
+                        y2:
+                            CY +
+                            pontos[b][1],
 
-                    x2:
-                        centroX + p2[0],
+                        stroke:
+                            "#8997d2",
 
-                    y2:
-                        centroY + p2[1],
+                        "stroke-width":
+                            0.8,
 
-                    stroke:
-                        "#8997d2",
+                        opacity:
+                            0.45
 
-                    "stroke-width":
-                        0.7,
-
-                    opacity:
-                        0.45
-
-                }
-            );
+                    }
+                );
 
 
-        svg.appendChild(linha);
+            svg.appendChild(linha);
 
-    }
-
-
-    /*
-       SEFIROT
-    */
-
-    for (
-        const [x, y]
-        of posicoes
-    ) {
-
-        const circulo =
-            criarElemento(
-                "circle",
-                {
-
-                    cx:
-                        centroX + x,
-
-                    cy:
-                        centroY + y,
-
-                    r: 10,
-
-                    fill:
-                        "#090d19",
-
-                    stroke:
-                        "#dce4ff",
-
-                    "stroke-width":
-                        1.3
-
-                }
-            );
+        }
+    );
 
 
-        svg.appendChild(circulo);
+    /* SEFIROT */
 
-    }
+    pontos.forEach(
+        ([x,y]) => {
+
+            const esfera =
+                criarSVG(
+                    "circle",
+                    {
+
+                        cx:
+                            CX + x,
+
+                        cy:
+                            CY + y,
+
+                        r: 10,
+
+                        fill:
+                            "#080b14",
+
+                        stroke:
+                            "#dce4ff",
+
+                        "stroke-width":
+                            1.4
+
+                    }
+                );
+
+
+            svg.appendChild(esfera);
+
+        }
+    );
 
 }
-
-
-/* =========================================================
-   TEXTO NO CÍRCULO
-========================================================= */
 
 function adicionarTextoCircular(
     texto,
     raio
 ) {
 
+    texto =
+        limparTexto(texto)
+        .replace(/[^a-z]/g, "");
+
+
+    if (!texto.length) {
+        return;
+    }
+
+
     const grupo =
-        criarElemento("g");
+        criarSVG("g");
 
 
     const caracteres =
-        normalizar(texto)
-        .replace(/[^a-z]/g, "")
-        .split("");
-
-
-    if (
-        caracteres.length === 0
-    ) return;
-
-
-    const anguloPorLetra =
-        360 /
-        caracteres.length;
+        texto.split("");
 
 
     caracteres.forEach(
@@ -666,11 +443,12 @@ function adicionarTextoCircular(
 
             const angulo =
                 indice *
-                anguloPorLetra;
+                360 /
+                caracteres.length;
 
 
-            const elemento =
-                criarElemento(
+            const t =
+                criarSVG(
                     "text",
                     {
 
@@ -683,7 +461,7 @@ function adicionarTextoCircular(
                             "#eef2ff",
 
                         "font-size":
-                            "18px",
+                            "17",
 
                         "font-family":
                             "serif",
@@ -701,13 +479,11 @@ function adicionarTextoCircular(
                 );
 
 
-            elemento.textContent =
+            t.textContent =
                 letra.toUpperCase();
 
 
-            grupo.appendChild(
-                elemento
-            );
+            grupo.appendChild(t);
 
         }
     );
@@ -717,71 +493,100 @@ function adicionarTextoCircular(
 
 }
 
+function construirMagia() {
 
-/* =========================================================
-   TEXTO CENTRAL
-========================================================= */
+    const valor =
+        efeito.value;
 
-function adicionarTextoCentral(
-    texto
-) {
 
-    const elemento =
-        criarElemento(
-            "text",
-            {
+    /*
+       Procura o número no final.
 
-                x: CX,
+       Exemplo:
 
-                y: CY + 5,
+       Fortalecimento 3
 
-                fill:
-                    "#ffffff",
+       vira:
 
-                "font-size":
-                    "18px",
+       nome = Fortalecimento
+       nível = 3
+    */
 
-                "font-family":
-                    "serif",
-
-                "text-anchor":
-                    "middle",
-
-                "letter-spacing":
-                    "3px"
-
-            }
+    const resultado =
+        valor.match(
+            /^(.*?)(?:\s+(\d+))?$/
         );
 
 
-    elemento.textContent =
-        texto.toUpperCase();
+    const nomeEfeito =
+        resultado[1];
 
 
-    svg.appendChild(elemento);
+    const nivel =
+        Number(
+            resultado[2] || 1
+        );
+
+
+    let partes = [];
+
+
+    for (
+        let i = 0;
+        i < nivel;
+        i++
+    ) {
+
+        partes.push(
+            nomeEfeito
+        );
+
+    }
+
+
+    partes.push(
+        elemento.value
+    );
+
+
+    partes.push(
+        forma.value
+    );
+
+
+    return partes.join(" ");
 
 }
-
-
-/* =========================================================
-   GERAR CÍRCULO
-========================================================= */
 
 function gerarCirculo() {
 
     /*
-       LIMPA SVG
+       LIMPA TUDO
     */
 
-    while (
-        svg.firstChild
-    ) {
+    svg.innerHTML = "";
 
-        svg.removeChild(
-            svg.firstChild
-        );
 
-    }
+    /*
+       GARANTE O VIEWBOX
+    */
+
+    svg.setAttribute(
+        "viewBox",
+        "0 0 800 800"
+    );
+
+
+    svg.setAttribute(
+        "width",
+        "800"
+    );
+
+
+    svg.setAttribute(
+        "height",
+        "800"
+    );
 
 
     /*
@@ -789,7 +594,7 @@ function gerarCirculo() {
     */
 
     const fundo =
-        criarElemento(
+        criarSVG(
             "rect",
             {
 
@@ -805,43 +610,46 @@ function gerarCirculo() {
         );
 
 
-    svg.appendChild(
-        fundo
+    svg.appendChild(fundo);
+
+
+    /*
+       CÍRCULOS EXTERNOS
+    */
+
+    adicionarCirculo(
+        375,
+        2
+    );
+
+    adicionarCirculo(
+        360,
+        1
+    );
+
+    adicionarCirculo(
+        335,
+        1
     );
 
 
     /*
-       CÍRCULOS PRINCIPAIS
+       CÍRCULOS INTERNOS
     */
 
     adicionarCirculo(
-        370,
-        2,
-        0.9
-    );
-
-    adicionarCirculo(
-        350,
-        1,
-        0.8
-    );
-
-    adicionarCirculo(
         300,
-        1.5,
-        0.8
+        1.5
     );
 
     adicionarCirculo(
         245,
-        1,
-        0.6
+        1
     );
 
     adicionarCirculo(
         190,
-        1.2,
-        0.8
+        1
     );
 
 
@@ -855,12 +663,14 @@ function gerarCirculo() {
         145
     );
 
+
     adicionarPoligono(
         8,
         250
     );
 
-    adicionarLinhasRadiais(
+
+    adicionarRadiais(
         16,
         350
     );
@@ -870,123 +680,99 @@ function gerarCirculo() {
        ÁRVORE DA VIDA
     */
 
-    adicionarArvoreDaVida();
+    adicionarArvore();
 
 
     /*
-       TEXTO MÁGICO
+       TEXTO
     */
 
-    const texto =
-        construirTexto();
+    const magia =
+        construirMagia();
 
 
     adicionarTextoCircular(
-        texto,
-        325
+        magia,
+        320
     );
 
 
     /*
-       TEXTO CENTRAL
+       NOME DA MAGIA
     */
 
-    const nome =
-        nomeMagia.value.trim();
-
-
     if (
-        nome !== ""
+        nome.value.trim() !== ""
     ) {
 
-        adicionarTextoCentral(
-            nome
-        );
+        const texto =
+            criarSVG(
+                "text",
+                {
+
+                    x: CX,
+
+                    y: CY + 5,
+
+                    fill:
+                        "#ffffff",
+
+                    "font-size":
+                        18,
+
+                    "font-family":
+                        "serif",
+
+                    "text-anchor":
+                        "middle",
+
+                    "letter-spacing":
+                        3
+
+                }
+            );
+
+
+        texto.textContent =
+            nome.value.toUpperCase();
+
+
+        svg.appendChild(texto);
 
     }
 
 
     /*
-       ATUALIZA INFORMAÇÕES
+       ATUALIZA PAINEL
     */
 
     mostrarEfeito.textContent =
-        efeitoSelect.value;
+        efeito.value;
+
 
     mostrarElemento.textContent =
-        elementoSelect.value;
+        elemento.value;
+
 
     mostrarForma.textContent =
-        formaSelect.value;
+        forma.value;
+
 
     mostrarTraducao.textContent =
-        texto;
+        magia;
 
 }
 
-
-/* =========================================================
-   TAMANHO
-========================================================= */
-
-tamanhoInput.addEventListener(
+tamanho.addEventListener(
     "input",
     () => {
 
-        const tamanho =
-            tamanhoInput.value;
-
-
         tamanhoValor.textContent =
-            `${tamanho} px`;
-
+            `${tamanho.value} px`;
 
         svg.style.width =
-            `${tamanho}px`;
+            `${tamanho.value}px`;
 
     }
 );
 
-
-/* =========================================================
-   BOTÃO GERAR
-========================================================= */
-
-gerarButton.addEventListener(
-    "click",
-    gerarCirculo
-);
-
-
-
-/* =========================================================
-   ATUALIZAÇÃO AUTOMÁTICA
-========================================================= */
-
-efeitoSelect.addEventListener(
-    "change",
-    gerarCirculo
-);
-
-elementoSelect.addEventListener(
-    "change",
-    gerarCirculo
-);
-
-formaSelect.addEventListener(
-    "change",
-    gerarCirculo
-);
-
-nomeMagia.addEventListener(
-    "input",
-    gerarCirculo
-);
-
-
-/* =========================================================
-   PRIMEIRA GERAÇÃO
-========================================================= */
-
-gerarCirculo();
-```
