@@ -1,0 +1,248 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gerador de Círculos Mágicos</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>GERADOR DE CÍRCULOS MÁGICOS</h1>
+        <p>Crie símbolos mágicos utilizando a linguagem do seu RPG.</p>
+    </header>
+
+    <main>
+
+        <!-- PAINEL DE CONTROLE -->
+        <section class="painel">
+
+            <h2>Configuração do Círculo</h2>
+
+            <div class="grupo">
+
+                <label for="efeito">Efeito</label>
+
+                <select id="efeito">
+
+                    <option value="Repulsão 1">Repulsão 1</option>
+                    <option value="Repulsão 2">Repulsão 2</option>
+                    <option value="Repulsão 3">Repulsão 3</option>
+                    <option value="Repulsão 4">Repulsão 4</option>
+
+                    <option value="Fortalecimento 1">Fortalecimento 1</option>
+                    <option value="Fortalecimento 2">Fortalecimento 2</option>
+                    <option value="Fortalecimento 3">Fortalecimento 3</option>
+                    <option value="Fortalecimento 4">Fortalecimento 4</option>
+
+                    <option value="Cadeia 1">Cadeia 1</option>
+                    <option value="Cadeia 2">Cadeia 2</option>
+                    <option value="Cadeia 3">Cadeia 3</option>
+                    <option value="Cadeia 4">Cadeia 4</option>
+
+                    <option value="Multi-Ativação 1">Multi-Ativação 1</option>
+                    <option value="Multi-Ativação 2">Multi-Ativação 2</option>
+
+                    <option value="Ricochete 1">Ricochete 1</option>
+                    <option value="Ricochete 2">Ricochete 2</option>
+
+                    <option value="Prender">Prender</option>
+                    <option value="Confusão">Confusão</option>
+                    <option value="Cegueira">Cegueira</option>
+                    <option value="Atordoamento">Atordoamento</option>
+                    <option value="Encantamento">Encantamento</option>
+                    <option value="Raiva">Raiva</option>
+                    <option value="Medo">Medo</option>
+                    <option value="Curar">Curar</option>
+
+                    <option value="Perseguir 1">Perseguir 1</option>
+                    <option value="Perseguir 2">Perseguir 2</option>
+
+                    <option value="Rastreador">Rastreador</option>
+                    <option value="Envenenar">Envenenar</option>
+                    <option value="Incendiar">Incendiar</option>
+                    <option value="Congelar">Congelar</option>
+                    <option value="Paralizar">Paralizar</option>
+
+                    <option value="Puxar 1">Puxar 1</option>
+                    <option value="Puxar 2">Puxar 2</option>
+                    <option value="Puxar 3">Puxar 3</option>
+                    <option value="Puxar 4">Puxar 4</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="grupo">
+
+                <label for="elemento">Elemento</label>
+
+                <select id="elemento">
+
+                    <option value="Água">Água</option>
+                    <option value="Fogo">Fogo</option>
+                    <option value="Terra">Terra</option>
+                    <option value="Ar">Ar</option>
+                    <option value="Elétrico">Elétrico</option>
+                    <option value="Vapor">Vapor</option>
+                    <option value="Planta">Planta</option>
+                    <option value="Trevas">Trevas</option>
+                    <option value="Luz">Luz</option>
+                    <option value="Metal">Metal</option>
+                    <option value="Psíquico">Psíquico</option>
+                    <option value="Gelo">Gelo</option>
+                    <option value="Radiação">Radiação</option>
+                    <option value="Sangue">Sangue</option>
+                    <option value="Alma">Alma</option>
+                    <option value="Caos">Caos</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="grupo">
+
+                <label for="forma">Forma</label>
+
+                <select id="forma">
+
+                    <option value="Linha Reta">Linha Reta</option>
+                    <option value="Trovão">Trovão</option>
+                    <option value="Parede">Parede</option>
+                    <option value="Flechas">Flechas</option>
+                    <option value="Espadas">Espadas</option>
+                    <option value="Explosão">Explosão</option>
+                    <option value="Cordas">Cordas</option>
+                    <option value="Líquido">Líquido</option>
+                    <option value="Redemoinho">Redemoinho</option>
+                    <option value="Campo">Campo</option>
+                    <option value="Marca">Marca</option>
+                    <option value="Orbital">Orbital</option>
+                    <option value="Esfera">Esfera</option>
+                    <option value="Invocação">Invocação</option>
+                    <option value="Totem">Totem</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="grupo">
+
+                <label for="nomeMagia">
+                    Nome personalizado
+                </label>
+
+                <input
+                    type="text"
+                    id="nomeMagia"
+                    placeholder="Ex: Chama do Abismo"
+                >
+
+            </div>
+
+
+            <div class="grupo">
+
+                <label for="tamanho">
+                    Tamanho do círculo
+                </label>
+
+                <input
+                    type="range"
+                    id="tamanho"
+                    min="500"
+                    max="1200"
+                    value="800"
+                >
+
+                <span id="tamanhoValor">800 px</span>
+
+            </div>
+
+
+            <button id="gerar">
+                GERAR CÍRCULO
+            </button>
+
+            <button id="baixar">
+                BAIXAR PNG
+            </button>
+
+        </section>
+
+
+        <!-- VISUALIZAÇÃO -->
+        <section class="visualizacao">
+
+            <h2>Pré-visualização</h2>
+
+            <div id="circuloContainer">
+
+                <svg
+                    id="circuloMagico"
+                    viewBox="0 0 800 800"
+                    xmlns="http://www.w3.org/2000/svg">
+
+                </svg>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRADUÇÃO -->
+        <section class="informacoes">
+
+            <h2>Composição</h2>
+
+            <div id="composicao">
+
+                <p>
+                    <strong>Efeito:</strong>
+                    <span id="mostrarEfeito">---</span>
+                </p>
+
+                <p>
+                    <strong>Elemento:</strong>
+                    <span id="mostrarElemento">---</span>
+                </p>
+
+                <p>
+                    <strong>Forma:</strong>
+                    <span id="mostrarForma">---</span>
+                </p>
+
+                <p>
+                    <strong>Transcrição:</strong>
+                    <span id="mostrarTraducao">---</span>
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            Gerador de Círculos Mágicos — RPG
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+```
