@@ -1,0 +1,380 @@
+```css
+/* =========================================================
+   CONFIGURAÇÕES GERAIS
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    background:
+        radial-gradient(
+            circle at center,
+            #182038 0%,
+            #090c16 45%,
+            #030408 100%
+        );
+
+    color: #eeeeee;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+header {
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    border-bottom: 1px solid #343b55;
+
+    background: rgba(0,0,0,0.25);
+
+}
+
+header h1 {
+
+    letter-spacing: 5px;
+
+    font-size: 30px;
+
+}
+
+header p {
+
+    margin-top: 8px;
+
+    color: #9da7c5;
+
+}
+
+
+/* =========================================================
+   ESTRUTURA
+========================================================= */
+
+main {
+
+    width: 95%;
+
+    max-width: 1400px;
+
+    margin: 30px auto;
+
+    display: grid;
+
+    grid-template-columns:
+        320px
+        1fr;
+
+    gap: 30px;
+
+}
+
+
+/* =========================================================
+   PAINEL
+========================================================= */
+
+.painel {
+
+    background:
+        rgba(10,13,25,0.9);
+
+    border:
+        1px solid #414967;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 0 30px rgba(0,0,0,0.4);
+
+    height: fit-content;
+
+}
+
+.painel h2 {
+
+    margin-bottom: 25px;
+
+    color: #d7dcff;
+
+    text-align: center;
+
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.grupo {
+
+    margin-bottom: 20px;
+
+}
+
+.grupo label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #aeb7d4;
+
+    font-size: 14px;
+
+}
+
+select,
+input[type="text"] {
+
+    width: 100%;
+
+    padding: 11px;
+
+    background: #111628;
+
+    color: white;
+
+    border: 1px solid #414967;
+
+    border-radius: 6px;
+
+    outline: none;
+
+}
+
+select:focus,
+input[type="text"]:focus {
+
+    border-color: #8795ff;
+
+}
+
+
+input[type="range"] {
+
+    width: 100%;
+
+}
+
+#tamanhoValor {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #8994b9;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+button {
+
+    width: 100%;
+
+    padding: 13px;
+
+    margin-top: 10px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    background: #252d4d;
+
+    color: white;
+
+    transition: 0.2s;
+
+}
+
+button:hover {
+
+    background: #3c4878;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* =========================================================
+   VISUALIZAÇÃO
+========================================================= */
+
+.visualizacao {
+
+    min-width: 0;
+
+    text-align: center;
+
+}
+
+.visualizacao h2 {
+
+    margin-bottom: 15px;
+
+    color: #d7dcff;
+
+}
+
+
+#circuloContainer {
+
+    width: 100%;
+
+    min-height: 600px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: auto;
+
+    padding: 20px;
+
+    background:
+        radial-gradient(
+            circle,
+            #11182b 0%,
+            #060811 70%
+        );
+
+    border:
+        1px solid #343b55;
+
+    border-radius: 15px;
+
+}
+
+
+/* =========================================================
+   SVG
+========================================================= */
+
+#circuloMagico {
+
+    width: min(100%, 800px);
+
+    height: auto;
+
+    max-height: 80vh;
+
+}
+
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.informacoes {
+
+    grid-column: 1 / -1;
+
+    background: rgba(10,13,25,0.9);
+
+    border: 1px solid #414967;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+}
+
+.informacoes h2 {
+
+    margin-bottom: 20px;
+
+}
+
+#composicao p {
+
+    margin: 8px 0;
+
+    color: #c8cde0;
+
+}
+
+#composicao strong {
+
+    color: #ffffff;
+
+}
+
+#mostrarTraducao {
+
+    color: #aab5ff;
+
+    font-family: monospace;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =========================================================
+   RODAPÉ
+========================================================= */
+
+footer {
+
+    text-align: center;
+
+    padding: 30px;
+
+    color: #59627e;
+
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    main {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .painel {
+
+        width: 100%;
+
+    }
+
+}
+```
