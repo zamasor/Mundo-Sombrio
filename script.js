@@ -631,3 +631,361 @@ function adicionarArvoreDaVida() {
 }
 
 
+/* =========================================================
+   TEXTO NO CÍRCULO
+========================================================= */
+
+function adicionarTextoCircular(
+    texto,
+    raio
+) {
+
+    const grupo =
+        criarElemento("g");
+
+
+    const caracteres =
+        normalizar(texto)
+        .replace(/[^a-z]/g, "")
+        .split("");
+
+
+    if (
+        caracteres.length === 0
+    ) return;
+
+
+    const anguloPorLetra =
+        360 /
+        caracteres.length;
+
+
+    caracteres.forEach(
+        (letra, indice) => {
+
+            const angulo =
+                indice *
+                anguloPorLetra;
+
+
+            const elemento =
+                criarElemento(
+                    "text",
+                    {
+
+                        x: CX,
+
+                        y:
+                            CY - raio,
+
+                        fill:
+                            "#eef2ff",
+
+                        "font-size":
+                            "18px",
+
+                        "font-family":
+                            "serif",
+
+                        "text-anchor":
+                            "middle",
+
+                        "dominant-baseline":
+                            "middle",
+
+                        transform:
+                            `rotate(${angulo} ${CX} ${CY})`
+
+                    }
+                );
+
+
+            elemento.textContent =
+                letra.toUpperCase();
+
+
+            grupo.appendChild(
+                elemento
+            );
+
+        }
+    );
+
+
+    svg.appendChild(grupo);
+
+}
+
+
+/* =========================================================
+   TEXTO CENTRAL
+========================================================= */
+
+function adicionarTextoCentral(
+    texto
+) {
+
+    const elemento =
+        criarElemento(
+            "text",
+            {
+
+                x: CX,
+
+                y: CY + 5,
+
+                fill:
+                    "#ffffff",
+
+                "font-size":
+                    "18px",
+
+                "font-family":
+                    "serif",
+
+                "text-anchor":
+                    "middle",
+
+                "letter-spacing":
+                    "3px"
+
+            }
+        );
+
+
+    elemento.textContent =
+        texto.toUpperCase();
+
+
+    svg.appendChild(elemento);
+
+}
+
+
+/* =========================================================
+   GERAR CÍRCULO
+========================================================= */
+
+function gerarCirculo() {
+
+    /*
+       LIMPA SVG
+    */
+
+    while (
+        svg.firstChild
+    ) {
+
+        svg.removeChild(
+            svg.firstChild
+        );
+
+    }
+
+
+    /*
+       FUNDO
+    */
+
+    const fundo =
+        criarElemento(
+            "rect",
+            {
+
+                x: 0,
+                y: 0,
+
+                width: 800,
+                height: 800,
+
+                fill: "#05070d"
+
+            }
+        );
+
+
+    svg.appendChild(
+        fundo
+    );
+
+
+    /*
+       CÍRCULOS PRINCIPAIS
+    */
+
+    adicionarCirculo(
+        370,
+        2,
+        0.9
+    );
+
+    adicionarCirculo(
+        350,
+        1,
+        0.8
+    );
+
+    adicionarCirculo(
+        300,
+        1.5,
+        0.8
+    );
+
+    adicionarCirculo(
+        245,
+        1,
+        0.6
+    );
+
+    adicionarCirculo(
+        190,
+        1.2,
+        0.8
+    );
+
+
+    /*
+       GEOMETRIA
+    */
+
+    adicionarEstrela(
+        6,
+        290,
+        145
+    );
+
+    adicionarPoligono(
+        8,
+        250
+    );
+
+    adicionarLinhasRadiais(
+        16,
+        350
+    );
+
+
+    /*
+       ÁRVORE DA VIDA
+    */
+
+    adicionarArvoreDaVida();
+
+
+    /*
+       TEXTO MÁGICO
+    */
+
+    const texto =
+        construirTexto();
+
+
+    adicionarTextoCircular(
+        texto,
+        325
+    );
+
+
+    /*
+       TEXTO CENTRAL
+    */
+
+    const nome =
+        nomeMagia.value.trim();
+
+
+    if (
+        nome !== ""
+    ) {
+
+        adicionarTextoCentral(
+            nome
+        );
+
+    }
+
+
+    /*
+       ATUALIZA INFORMAÇÕES
+    */
+
+    mostrarEfeito.textContent =
+        efeitoSelect.value;
+
+    mostrarElemento.textContent =
+        elementoSelect.value;
+
+    mostrarForma.textContent =
+        formaSelect.value;
+
+    mostrarTraducao.textContent =
+        texto;
+
+}
+
+
+/* =========================================================
+   TAMANHO
+========================================================= */
+
+tamanhoInput.addEventListener(
+    "input",
+    () => {
+
+        const tamanho =
+            tamanhoInput.value;
+
+
+        tamanhoValor.textContent =
+            `${tamanho} px`;
+
+
+        svg.style.width =
+            `${tamanho}px`;
+
+    }
+);
+
+
+/* =========================================================
+   BOTÃO GERAR
+========================================================= */
+
+gerarButton.addEventListener(
+    "click",
+    gerarCirculo
+);
+
+
+
+/* =========================================================
+   ATUALIZAÇÃO AUTOMÁTICA
+========================================================= */
+
+efeitoSelect.addEventListener(
+    "change",
+    gerarCirculo
+);
+
+elementoSelect.addEventListener(
+    "change",
+    gerarCirculo
+);
+
+formaSelect.addEventListener(
+    "change",
+    gerarCirculo
+);
+
+nomeMagia.addEventListener(
+    "input",
+    gerarCirculo
+);
+
+
+/* =========================================================
+   PRIMEIRA GERAÇÃO
+========================================================= */
+
+gerarCirculo();
+```
