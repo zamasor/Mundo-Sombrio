@@ -1,248 +1,368 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Círculo Mágico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <title>Gerador de Círculos Mágicos</title>
+        body {
+            background: #0a0c12;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        h1 {
+            margin-bottom: 25px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #c9b37e;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        .controles {
+            background: #12151f;
+            padding: 25px;
+            border-radius: 12px;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #1e2333;
+        }
+
+        label {
+            font-size: 13px;
+            color: #8a93a8;
+            margin-bottom: -8px;
+        }
+
+        input, select {
+            background: #0d1018;
+            border: 1px solid #2a3145;
+            color: #e0e0e0;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #c9b37e;
+        }
+
+        button {
+            background: #c9b37e;
+            color: #0a0c12;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background: #dbca9a;
+        }
+
+        button.secundario {
+            background: transparent;
+            border: 1px solid #c9b37e;
+            color: #c9b37e;
+        }
+
+        button.secundario:hover {
+            background: #c9b37e22;
+        }
+
+        .preview {
+            background: #12151f;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #1e2333;
+        }
+
+        #circuloMagico {
+            width: 400px;
+            height: 400px;
+            display: block;
+            background: #05070d;
+            border-radius: 8px;
+        }
+
+        .info {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #8a93a8;
+            line-height: 1.7;
+        }
+
+        .info span {
+            color: #c9b37e;
+        }
+    </style>
 </head>
-
 <body>
 
-    <header>
-        <h1>GERADOR DE CÍRCULOS MÁGICOS</h1>
-        <p>Crie símbolos mágicos utilizando a linguagem do seu RPG.</p>
-    </header>
+    <h1>Círculo Mágico</h1>
 
-    <main>
+    <div class="container">
+        <!-- Controles -->
+        <div class="controles">
+            <label>Nome da Magia</label>
+            <input type="text" id="nomeMagia" placeholder="Ex: Bola de Fogo" value="Bola de Fogo">
 
-        <!-- PAINEL DE CONTROLE -->
-        <section class="painel">
+            <label>Efeito (pode colocar nível)</label>
+            <input type="text" id="efeito" placeholder="Ex: Explosão 3" value="Explosão 3">
 
-            <h2>Configuração do Círculo</h2>
+            <label>Elemento</label>
+            <select id="elemento">
+                <option value="Fogo">Fogo</option>
+                <option value="Água">Água</option>
+                <option value="Terra">Terra</option>
+                <option value="Ar">Ar</option>
+                <option value="Raio">Raio</option>
+                <option value="Gelo">Gelo</option>
+                <option value="Sombra">Sombra</option>
+                <option value="Luz">Luz</option>
+            </select>
 
-            <div class="grupo">
+            <label>Forma</label>
+            <select id="forma">
+                <option value="Projetil">Projetil</option>
+                <option value="Área">Área</option>
+                <option value="Toque">Toque</option>
+                <option value="Aura">Aura</option>
+                <option value="Invocação">Invocação</option>
+            </select>
 
-                <label for="efeito">Efeito</label>
+            <button id="gerar">Gerar Círculo</button>
+            <button id="baixar" class="secundario">Baixar PNG</button>
 
-                <select id="efeito">
-
-                    <option value="Repulsão 1">Repulsão 1</option>
-                    <option value="Repulsão 2">Repulsão 2</option>
-                    <option value="Repulsão 3">Repulsão 3</option>
-                    <option value="Repulsão 4">Repulsão 4</option>
-
-                    <option value="Fortalecimento 1">Fortalecimento 1</option>
-                    <option value="Fortalecimento 2">Fortalecimento 2</option>
-                    <option value="Fortalecimento 3">Fortalecimento 3</option>
-                    <option value="Fortalecimento 4">Fortalecimento 4</option>
-
-                    <option value="Cadeia 1">Cadeia 1</option>
-                    <option value="Cadeia 2">Cadeia 2</option>
-                    <option value="Cadeia 3">Cadeia 3</option>
-                    <option value="Cadeia 4">Cadeia 4</option>
-
-                    <option value="Multi-Ativação 1">Multi-Ativação 1</option>
-                    <option value="Multi-Ativação 2">Multi-Ativação 2</option>
-
-                    <option value="Ricochete 1">Ricochete 1</option>
-                    <option value="Ricochete 2">Ricochete 2</option>
-
-                    <option value="Prender">Prender</option>
-                    <option value="Confusão">Confusão</option>
-                    <option value="Cegueira">Cegueira</option>
-                    <option value="Atordoamento">Atordoamento</option>
-                    <option value="Encantamento">Encantamento</option>
-                    <option value="Raiva">Raiva</option>
-                    <option value="Medo">Medo</option>
-                    <option value="Curar">Curar</option>
-
-                    <option value="Perseguir 1">Perseguir 1</option>
-                    <option value="Perseguir 2">Perseguir 2</option>
-
-                    <option value="Rastreador">Rastreador</option>
-                    <option value="Envenenar">Envenenar</option>
-                    <option value="Incendiar">Incendiar</option>
-                    <option value="Congelar">Congelar</option>
-                    <option value="Paralizar">Paralizar</option>
-
-                    <option value="Puxar 1">Puxar 1</option>
-                    <option value="Puxar 2">Puxar 2</option>
-                    <option value="Puxar 3">Puxar 3</option>
-                    <option value="Puxar 4">Puxar 4</option>
-
-                </select>
-
+            <div class="info">
+                <div>Efeito: <span id="mostrarEfeito">—</span></div>
+                <div>Elemento: <span id="mostrarElemento">—</span></div>
+                <div>Forma: <span id="mostrarForma">—</span></div>
+                <div>Tradução: <span id="mostrarTraducao">—</span></div>
             </div>
+        </div>
 
+        <!-- Preview do SVG -->
+        <div class="preview">
+            <svg id="circuloMagico" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+    </div>
 
-            <div class="grupo">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const svg = document.getElementById("circuloMagico");
+            const efeito = document.getElementById("efeito");
+            const elemento = document.getElementById("elemento");
+            const forma = document.getElementById("forma");
+            const nomeMagia = document.getElementById("nomeMagia");
+            const gerar = document.getElementById("gerar");
+            const baixar = document.getElementById("baixar");
+            const mostrarEfeito = document.getElementById("mostrarEfeito");
+            const mostrarElemento = document.getElementById("mostrarElemento");
+            const mostrarForma = document.getElementById("mostrarForma");
+            const mostrarTraducao = document.getElementById("mostrarTraducao");
 
-                <label for="elemento">Elemento</label>
+            function elementoSVG(tag, atributos = {}) {
+                const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+                for (const chave in atributos) {
+                    el.setAttribute(chave, atributos[chave]);
+                }
+                return el;
+            }
 
-                <select id="elemento">
+            function texto(conteudo, x, y, tamanho = 20) {
+                const el = elementoSVG("text", {
+                    x: x,
+                    y: y,
+                    fill: "#ffffff",
+                    "font-size": tamanho,
+                    "font-family": "Georgia, Times New Roman, serif",
+                    "text-anchor": "middle",
+                    "dominant-baseline": "middle"
+                });
+                el.textContent = conteudo;
+                return el;
+            }
 
-                    <option value="Água">Água</option>
-                    <option value="Fogo">Fogo</option>
-                    <option value="Terra">Terra</option>
-                    <option value="Ar">Ar</option>
-                    <option value="Elétrico">Elétrico</option>
-                    <option value="Vapor">Vapor</option>
-                    <option value="Planta">Planta</option>
-                    <option value="Trevas">Trevas</option>
-                    <option value="Luz">Luz</option>
-                    <option value="Metal">Metal</option>
-                    <option value="Psíquico">Psíquico</option>
-                    <option value="Gelo">Gelo</option>
-                    <option value="Radiação">Radiação</option>
-                    <option value="Sangue">Sangue</option>
-                    <option value="Alma">Alma</option>
-                    <option value="Caos">Caos</option>
+            function circulo(cx, cy, r, largura = 2) {
+                return elementoSVG("circle", {
+                    cx: cx,
+                    cy: cy,
+                    r: r,
+                    fill: "none",
+                    stroke: "#ffffff",
+                    "stroke-width": largura
+                });
+            }
 
-                </select>
+            function gerarCirculo() {
+                svg.innerHTML = "";
 
-            </div>
+                // Fundo
+                svg.appendChild(elementoSVG("rect", {
+                    width: 800,
+                    height: 800,
+                    fill: "#05070d"
+                }));
 
+                // Círculos
+                svg.appendChild(circulo(400, 400, 365, 3));
+                svg.appendChild(circulo(400, 400, 350, 1));
+                svg.appendChild(circulo(400, 400, 280, 2));
+                svg.appendChild(circulo(400, 400, 210, 1));
+                svg.appendChild(circulo(400, 400, 100, 2));
 
-            <div class="grupo">
+                // Linhas radiais
+                for (let i = 0; i < 16; i++) {
+                    const angulo = (i / 16) * Math.PI * 2;
+                    const x1 = 400 + Math.cos(angulo) * 100;
+                    const y1 = 400 + Math.sin(angulo) * 100;
+                    const x2 = 400 + Math.cos(angulo) * 350;
+                    const y2 = 400 + Math.sin(angulo) * 350;
 
-                <label for="forma">Forma</label>
+                    svg.appendChild(elementoSVG("line", {
+                        x1, y1, x2, y2,
+                        stroke: "#ffffff",
+                        "stroke-width": 1
+                    }));
+                }
 
-                <select id="forma">
+                // Estrela
+                const pontos = [];
+                for (let i = 0; i < 10; i++) {
+                    const raio = i % 2 === 0 ? 100 : 42;
+                    const angulo = -Math.PI / 2 + (i * Math.PI) / 5;
+                    pontos.push(`${400 + Math.cos(angulo) * raio},${400 + Math.sin(angulo) * raio}`);
+                }
+                svg.appendChild(elementoSVG("polygon", {
+                    points: pontos.join(" "),
+                    fill: "none",
+                    stroke: "#ffffff",
+                    "stroke-width": 2
+                }));
 
-                    <option value="Linha Reta">Linha Reta</option>
-                    <option value="Trovão">Trovão</option>
-                    <option value="Parede">Parede</option>
-                    <option value="Flechas">Flechas</option>
-                    <option value="Espadas">Espadas</option>
-                    <option value="Explosão">Explosão</option>
-                    <option value="Cordas">Cordas</option>
-                    <option value="Líquido">Líquido</option>
-                    <option value="Redemoinho">Redemoinho</option>
-                    <option value="Campo">Campo</option>
-                    <option value="Marca">Marca</option>
-                    <option value="Orbital">Orbital</option>
-                    <option value="Esfera">Esfera</option>
-                    <option value="Invocação">Invocação</option>
-                    <option value="Totem">Totem</option>
+                // Nome da magia
+                const nome = nomeMagia.value.trim();
+                if (nome) {
+                    svg.appendChild(texto(nome, 400, 400, 22));
+                }
 
-                </select>
+                // Efeito
+                const efeitoSelecionado = efeito.value.trim();
+                let efeitoNome = "";
+                let nivel = 1;
 
-            </div>
+                if (efeitoSelecionado) {
+                    const partes = efeitoSelecionado.match(/^(.*?)(?:\s+(\d+))?$/);
+                    if (partes) {
+                        efeitoNome = partes[1].trim();
+                        nivel = partes[2] ? parseInt(partes[2], 10) : 1;
+                    } else {
+                        efeitoNome = efeitoSelecionado;
+                    }
+                }
 
+                nivel = Math.min(Math.max(nivel, 1), 6);
 
-            <div class="grupo">
+                if (efeitoNome) {
+                    for (let i = 0; i < nivel; i++) {
+                        svg.appendChild(texto(efeitoNome, 400, 55 + i * 22, 14));
+                    }
+                }
 
-                <label for="nomeMagia">
-                    Nome personalizado
-                </label>
+                // Elemento e Forma
+                const valorElemento = elemento.value.trim();
+                const valorForma = forma.value.trim();
 
-                <input
-                    type="text"
-                    id="nomeMagia"
-                    placeholder="Ex: Chama do Abismo"
-                >
+                if (valorElemento) {
+                    svg.appendChild(texto(valorElemento, 400, 740, 16));
+                }
+                if (valorForma) {
+                    svg.appendChild(texto(valorForma, 400, 770, 14));
+                }
 
-            </div>
+                // Atualiza info
+                mostrarEfeito.textContent = efeitoSelecionado || "—";
+                mostrarElemento.textContent = valorElemento || "—";
+                mostrarForma.textContent = valorForma || "—";
+                mostrarTraducao.textContent = [efeitoNome, valorElemento, valorForma]
+                    .filter(Boolean)
+                    .join(" ") || "—";
+            }
 
+            gerar.addEventListener("click", gerarCirculo);
+            gerarCirculo(); // Gera ao carregar
 
-            <div class="grupo">
+            // Download PNG
+            baixar.addEventListener("click", () => {
+                try {
+                    const serializer = new XMLSerializer();
+                    const svgString = serializer.serializeToString(svg);
+                    const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
 
-                <label for="tamanho">
-                    Tamanho do círculo
-                </label>
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement("canvas");
+                        canvas.width = 1600;
+                        canvas.height = 1600;
+                        const ctx = canvas.getContext("2d");
 
-                <input
-                    type="range"
-                    id="tamanho"
-                    min="500"
-                    max="1200"
-                    value="800"
-                >
+                        ctx.fillStyle = "#05070d";
+                        ctx.fillRect(0, 0, 1600, 1600);
+                        ctx.drawImage(img, 0, 0, 1600, 1600);
+                        URL.revokeObjectURL(url);
 
-                <span id="tamanhoValor">800 px</span>
+                        canvas.toBlob((png) => {
+                            if (!png) {
+                                alert("Não foi possível gerar o PNG.");
+                                return;
+                            }
+                            const link = document.createElement("a");
+                            link.download = "circulo-magico.png";
+                            link.href = URL.createObjectURL(png);
+                            link.click();
+                            setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+                        }, "image/png");
+                    };
 
-            </div>
+                    img.onerror = () => {
+                        URL.revokeObjectURL(url);
+                        alert("Erro ao carregar a imagem para conversão.");
+                    };
 
-
-            <button id="gerar">
-                GERAR CÍRCULO
-            </button>
-
-            <button id="baixar">
-                BAIXAR PNG
-            </button>
-
-        </section>
-
-
-        <!-- VISUALIZAÇÃO -->
-        <section class="visualizacao">
-
-            <h2>Pré-visualização</h2>
-
-            <div id="circuloContainer">
-
-                <svg
-                    id="circuloMagico"
-                    viewBox="0 0 800 800"
-                    xmlns="http://www.w3.org/2000/svg">
-
-                </svg>
-
-            </div>
-
-        </section>
-
-
-        <!-- TRADUÇÃO -->
-        <section class="informacoes">
-
-            <h2>Composição</h2>
-
-            <div id="composicao">
-
-                <p>
-                    <strong>Efeito:</strong>
-                    <span id="mostrarEfeito">---</span>
-                </p>
-
-                <p>
-                    <strong>Elemento:</strong>
-                    <span id="mostrarElemento">---</span>
-                </p>
-
-                <p>
-                    <strong>Forma:</strong>
-                    <span id="mostrarForma">---</span>
-                </p>
-
-                <p>
-                    <strong>Transcrição:</strong>
-                    <span id="mostrarTraducao">---</span>
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        <p>
-            Gerador de Círculos Mágicos — RPG
-        </p>
-
-    </footer>
-
-
-    <script src="script.js"></script>
-
+                    img.src = url;
+                } catch (e) {
+                    console.error(e);
+                    alert("Erro ao tentar baixar a imagem.");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-```
