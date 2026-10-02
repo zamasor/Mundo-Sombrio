@@ -1,221 +1,117 @@
-```css
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
+    background: #0a0c12;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle,
-            #182038,
-            #090c16 50%,
-            #030408
-        );
-
-    color: white;
-
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
 }
 
-header {
-    text-align: center;
-
-    padding: 30px;
-
-    border-bottom:
-        1px solid #343b55;
-}
-
-header h1 {
-    letter-spacing: 5px;
-}
-
-header p {
-    margin-top: 10px;
-
-    color: #9da7c5;
-}
-
-main {
-    width: 95%;
-    max-width: 1400px;
-
-    margin: 30px auto;
-
-    display: grid;
-
-    grid-template-columns:
-        320px 1fr;
-
-    gap: 30px;
-}
-
-.painel,
-.informacoes {
-
-    background:
-        rgba(10, 13, 25, 0.95);
-
-    border:
-        1px solid #414967;
-
-    border-radius: 12px;
-
-    padding: 25px;
-}
-
-.painel {
-    height: fit-content;
-}
-
-.painel h2 {
+h1 {
     margin-bottom: 25px;
-
-    text-align: center;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #c9b37e;
 }
 
-.grupo {
-    margin-bottom: 20px;
+.container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
 }
 
-.grupo label {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #aeb7d4;
+.controles {
+    background: #12151f;
+    padding: 25px;
+    border-radius: 12px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid #1e2333;
 }
 
-select,
-input[type="text"] {
+label {
+    font-size: 13px;
+    color: #8a93a8;
+    margin-bottom: -8px;
+}
 
-    width: 100%;
-
-    padding: 11px;
-
-    background: #111628;
-
-    color: white;
-
-    border:
-        1px solid #414967;
-
+input,
+select {
+    background: #0d1018;
+    border: 1px solid #2a3145;
+    color: #e0e0e0;
+    padding: 10px 12px;
     border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus {
+    border-color: #c9b37e;
 }
 
 button {
-
-    width: 100%;
-
-    padding: 13px;
-
-    margin-top: 10px;
-
+    background: #c9b37e;
+    color: #0a0c12;
     border: none;
-
+    padding: 12px;
     border-radius: 6px;
-
+    font-weight: 600;
     cursor: pointer;
-
-    background: #252d4d;
-
-    color: white;
-
-    font-weight: bold;
+    transition: background 0.2s;
+    margin-top: 5px;
 }
 
 button:hover {
-    background: #3c4878;
+    background: #dbca9a;
 }
 
-.visualizacao {
-    text-align: center;
+button.secundario {
+    background: transparent;
+    border: 1px solid #c9b37e;
+    color: #c9b37e;
 }
 
-.visualizacao h2 {
-    margin-bottom: 15px;
+button.secundario:hover {
+    background: #c9b37e22;
 }
 
-#circuloContainer {
-
-    width: 100%;
-
-    min-height: 650px;
-
+.preview {
+    background: #12151f;
     padding: 20px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    overflow: auto;
-
-    background:
-        radial-gradient(
-            circle,
-            #11182b,
-            #060811
-        );
-
-    border:
-        1px solid #343b55;
-
-    border-radius: 15px;
+    border-radius: 12px;
+    border: 1px solid #1e2333;
 }
 
 #circuloMagico {
-
-    width: min(100%, 800px);
-
-    height: auto;
-
+    width: 400px;
+    height: 400px;
     display: block;
+    background: #05070d;
+    border-radius: 8px;
 }
 
-.informacoes {
-    grid-column: 1 / -1;
+.info {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #8a93a8;
+    line-height: 1.7;
 }
 
-.informacoes h2 {
-    margin-bottom: 20px;
+.info span {
+    color: #c9b37e;
 }
-
-#composicao p {
-    margin: 8px 0;
-
-    color: #c8cde0;
-}
-
-#mostrarTraducao {
-    color: #aab5ff;
-
-    font-family: monospace;
-
-    letter-spacing: 2px;
-}
-
-footer {
-    text-align: center;
-
-    padding: 30px;
-
-    color: #59627e;
-}
-
-@media (max-width: 900px) {
-
-    main {
-        grid-template-columns: 1fr;
-    }
-
-}
-```
